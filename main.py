@@ -163,5 +163,5 @@ if __name__ == "__main__":
         for individual in p_population:
             print(individual)
         with open('result.txt', 'w') as f:
-            for individual in population:
+            for individual in p_population:
                 f.write(str(individual) + '\n')
