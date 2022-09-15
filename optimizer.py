@@ -9,6 +9,8 @@ from utils import STRAT_PARAMS, resample_timeframe, get_library
 from database import Hdf5Client
 from models import BacktestResult
 
+import multiprocessing as mp
+
 import strategies.obv
 import strategies.ichimoku
 import strategies.support_resistance
@@ -306,16 +308,30 @@ class Nsga2:
 
         elif self.strategy == "sup_res":
 
-            for bt in population:
-                bt.pnl, bt.max_dd = strategies.support_resistance.backtest(self.data, min_points=bt.parameters["min_points"],
-                                                            min_diff_points=bt.parameters["min_diff_points"],
-                                                            rounding_nb=bt.parameters["rounding_nb"],
-                                                            take_profit=bt.parameters["take_profit"], stop_loss=bt.parameters["stop_loss"])
+        elif self.strategy == "sup_res":
+
+            with mp.Pool(mp.cpu_count()) as pool:
+                results = pool.starmap(strategies.support_resistance.backtest,
+                                    ((self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"],
+                                        bt.parameters["rounding_nb"], bt.parameters["take_profit"], bt.parameters["stop_loss"])
+                                        for bt in population))
+            for bt, (pnl, max_dd) in zip(population, results):
+                bt.pnl, bt.max_dd = pnl, max_dd
                 if bt.pnl == 0:
                     bt.pnl = -float("inf")
                     bt.max_dd = float("inf")
-
             return population
+
+            # for bt in population:
+            #     bt.pnl, bt.max_dd = strategies.support_resistance.backtest(self.data, min_points=bt.parameters["min_points"],
+            #                                                 min_diff_points=bt.parameters["min_diff_points"],
+            #                                                 rounding_nb=bt.parameters["rounding_nb"],
+            #                                                 take_profit=bt.parameters["take_profit"], stop_loss=bt.parameters["stop_loss"])
+            #     if bt.pnl == 0:
+            #         bt.pnl = -float("inf")
+            #         bt.max_dd = float("inf")
+
+            # return population
 
         elif self.strategy == "sma":
 
