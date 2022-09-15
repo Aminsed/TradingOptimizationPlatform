@@ -308,8 +308,6 @@ class Nsga2:
 
         elif self.strategy == "sup_res":
 
-        elif self.strategy == "sup_res":
-
             with mp.Pool(mp.cpu_count()) as pool:
                 results = pool.starmap(strategies.support_resistance.backtest,
                                     ((self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"],
