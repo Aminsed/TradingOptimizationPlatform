@@ -357,3 +357,27 @@ class Nsga2:
 
             return population
     
+
+# using GPU
+# def support_resistance_gpu(data, min_points, min_diff_points, rounding_nb, take_profit, stop_loss):
+#     device = torch.device("cuda")
+#     dtype = torch.double
+#     data = torch.tensor(data, device=device, dtype=dtype)
+#     min_points = torch.tensor(min_points, device=device, dtype=dtype)
+#     min_diff_points = torch.tensor(min_diff_points, device=device, dtype=dtype)
+#     rounding_nb = torch.tensor(rounding_nb, device=device, dtype=dtype)
+#     take_profit = torch.tensor(take_profit, device=device, dtype=dtype)
+#     stop_loss = torch.tensor(stop_loss, device=device, dtype=dtype)
+#     pnl, max_dd = strategies.support_resistance.backtest(data, min_points, min_diff_points, rounding_nb, take_profit, stop_loss)
+#     return pnl.cpu().numpy(), max_dd.cpu().numpy()
+
+# with torch.multiprocessing.get_context("spawn").Pool(torch.cuda.device_count()) as pool:
+#     results = pool.starmap(support_resistance_gpu, 
+#                            ((self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"], bt.parameters["rounding_nb"], bt.parameters["take_profit"], bt.parameters["stop_loss"])
+#                             for bt in population))
+# for bt, (pnl, max_dd) in zip(population, results):
+#     bt.pnl, bt.max_dd = pnl, max_dd
+#     if bt.pnl == 0:
+#         bt.pnl = -float("inf")
+#         bt.max_dd = float("inf")
+# return population
