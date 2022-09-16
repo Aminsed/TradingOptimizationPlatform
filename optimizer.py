@@ -333,8 +333,11 @@ class Nsga2:
 
         elif self.strategy == "sma":
 
+            with mp.Pool(mp.cpu_count()) as pool:
+                results = pool.starmap(self.lib.Sma_execute_backtest,
+                                    [(self.obj, bt.parameters["slow_ma"], bt.parameters["fast_ma"])
+                                        for bt in population])
             for bt in population:
-                self.lib.Sma_execute_backtest(self.obj, bt.parameters["slow_ma"], bt.parameters["fast_ma"])
                 bt.pnl = self.lib.Sma_get_pnl(self.obj)
                 bt.max_dd = self.lib.Sma_get_max_dd(self.obj)
 
@@ -343,6 +346,17 @@ class Nsga2:
                     bt.max_dd = float("inf")
 
             return population
+
+            # for bt in population:
+            #     self.lib.Sma_execute_backtest(self.obj, bt.parameters["slow_ma"], bt.parameters["fast_ma"])
+            #     bt.pnl = self.lib.Sma_get_pnl(self.obj)
+            #     bt.max_dd = self.lib.Sma_get_max_dd(self.obj)
+
+            #     if bt.pnl == 0:
+            #         bt.pnl = -float("inf")
+            #         bt.max_dd = float("inf")
+
+            # return population
 
         elif self.strategy == "psar":
 
