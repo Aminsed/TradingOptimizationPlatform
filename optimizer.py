@@ -1,8 +1,7 @@
 import random
 import typing
 import copy
-import os
-import time
+
 
 from regex import B
 
@@ -20,8 +19,7 @@ import strategies.macd
 import strategies.rsi
 import strategies.bb
 
-import  torch
-import torch.multiprocessing as mp
+
 
 class Nsga2:
     def __init__(self,exchange: str, symbol: str, strategy: str, 
@@ -338,17 +336,17 @@ class Nsga2:
             gpu_pool(population)
 
 
-            # with mp.Pool(mp.cpu_count()) as pool:
-            #     results = pool.starmap(strategies.support_resistance.backtest,
-            #                         ((self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"],
-            #                             bt.parameters["rounding_nb"], bt.parameters["take_profit"], bt.parameters["stop_loss"])
-            #                             for bt in population))
-            # for bt, (pnl, max_dd) in zip(population, results):
-            #     bt.pnl, bt.max_dd = pnl, max_dd
-            #     if bt.pnl == 0:
-            #         bt.pnl = -float("inf")
-            #         bt.max_dd = float("inf")
-            # return population
+            with mp.Pool(mp.cpu_count()) as pool:
+                results = pool.starmap(strategies.support_resistance.backtest,
+                                    ((self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"],
+                                        bt.parameters["rounding_nb"], bt.parameters["take_profit"], bt.parameters["stop_loss"])
+                                        for bt in population))
+            for bt, (pnl, max_dd) in zip(population, results):
+                bt.pnl, bt.max_dd = pnl, max_dd
+                if bt.pnl == 0:
+                    bt.pnl = -float("inf")
+                    bt.max_dd = float("inf")
+            return population
 
             # for bt in population:
             #     bt.pnl, bt.max_dd = strategies.support_resistance.backtest(self.data, min_points=bt.parameters["min_points"],
