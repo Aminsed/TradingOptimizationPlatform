@@ -330,7 +330,7 @@ class Nsga2:
                         bt.max_dd = float("inf")
                 return population
 
-            return gpu_pool()
+            return gpu_pool(population)
 
             # with mp.Pool(mp.cpu_count()) as pool:
             #     results = pool.starmap(strategies.support_resistance.backtest,
