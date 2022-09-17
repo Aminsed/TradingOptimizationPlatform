@@ -18,6 +18,8 @@ import strategies.macd
 import strategies.rsi
 import strategies.bb
 
+import torch
+
 class Nsga2:
     def __init__(self,exchange: str, symbol: str, strategy: str, 
                 tf: str, from_time: int, to_time: int, population_size: int):
