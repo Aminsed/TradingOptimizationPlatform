@@ -19,6 +19,7 @@ import strategies.macd
 import strategies.rsi
 import strategies.bb
 
+import torch
 
 
 class Nsga2:
