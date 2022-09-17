@@ -316,22 +316,21 @@ class Nsga2:
 
                 with mp.get_context('spawn').Pool(processes=num_gpus) as pool:
                     for gpu_id in range(num_gpus):
-                    print(num_gpus)
-                    with torch.cuda.device(gpu_id):
-                        pool.apply(strategies.support_resistance.backtest,
-                                                ((self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"],
-                                                    bt.parameters["rounding_nb"], bt.parameters["take_profit"], bt.parameters["stop_loss"])
-                                                    for bt in population))
-                    results = pool.starmap(strategies.support_resistance.backtest,
-                                                ((self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"],
-                                                    bt.parameters["rounding_nb"], bt.parameters["take_profit"], bt.parameters["stop_loss"])
-                                                    for bt in population))
-                    for bt, (pnl, max_dd) in zip(population, results):
-                        bt.pnl, bt.max_dd = pnl, max_dd
-                        if bt.pnl == 0:
-                            bt.pnl = -float("inf")
-                            bt.max_dd = float("inf")
-                    return population
+                        with torch.cuda.device(gpu_id):
+                            pool.apply(strategies.support_resistance.backtest,
+                                                    ((self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"],
+                                                        bt.parameters["rounding_nb"], bt.parameters["take_profit"], bt.parameters["stop_loss"])
+                                                        for bt in population))
+                        results = pool.starmap(strategies.support_resistance.backtest,
+                                                    ((self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"],
+                                                        bt.parameters["rounding_nb"], bt.parameters["take_profit"], bt.parameters["stop_loss"])
+                                                        for bt in population))
+                        for bt, (pnl, max_dd) in zip(population, results):
+                            bt.pnl, bt.max_dd = pnl, max_dd
+                            if bt.pnl == 0:
+                                bt.pnl = -float("inf")
+                                bt.max_dd = float("inf")
+                        return population
             parallel()
             
             # with mp.Pool(mp.cpu_count()) as pool:
