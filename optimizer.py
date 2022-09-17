@@ -310,32 +310,7 @@ class Nsga2:
             return population
 
         elif self.strategy == "sup_res":
-
-            def gpu_support_resistance(data, min_points, min_diff_points, rounding_nb, take_profit, stop_loss):
-                device = torch.device("cuda:0")
-                data = data.to(device)
-                strategies.support_resistance.backtest(data, min_points, min_diff_points, rounding_nb, take_profit, stop_loss)
-
-            def gpu_pool(population):
-                for bt in population:
-                    begin = time.time()
-                    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-                    mp.spawn(gpu_support_resistance,
-                        args=(self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"],
-                                bt.parameters["rounding_nb"], bt.parameters["take_profit"], bt.parameters["stop_loss"]),
-                        nprocs=1, join=True)
-                    bt.pnl, bt.max_dd = strategies.support_resistance.pnl, strategies.support_resistance.max_dd
-                    strategies.support_resistance.pnl, strategies.support_resistance.max_dd = 0, 0
-                    if bt.pnl == 0:
-                        bt.pnl = -float("inf")
-                        bt.max_dd = float("inf")
-                    end = time.time()
-                    print(end - begin)
-                return population
-
-            gpu_pool(population)
-
-
+            
             with mp.Pool(mp.cpu_count()) as pool:
                 results = pool.starmap(strategies.support_resistance.backtest,
                                     ((self.data, bt.parameters["min_points"], bt.parameters["min_diff_points"],
