@@ -1,16 +1,15 @@
-import pandas as pd
-import cudf as df
-
 import time
+
+import pandas as pd
 import numpy as np
 
 
 # import matplotlib.pyplot as plt
 # import mplfinance as mpf
 
-# pd.set_option("display.max_columns", None)
-# pd.set_option("display.max_rows", None)
-# pd.set_option("display.width", 1000)
+pd.set_option("display.max_columns", None)
+pd.set_option("display.max_rows", None)
+pd.set_option("display.width", 1000)
 
 
 def backtest(pd_df: pd.DataFrame, min_points: int, min_diff_points: int, rounding_nb: float, take_profit: float,
