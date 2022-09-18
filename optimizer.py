@@ -19,7 +19,6 @@ import strategies.macd
 import strategies.rsi
 import strategies.bb
 
-from numba import cuda
 
 
 class Nsga2:
