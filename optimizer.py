@@ -267,13 +267,16 @@ class Nsga2:
 
         elif self.strategy == "macd":
 
-            for bt in population:
-                bt.pnl, bt.max_dd = strategies.macd.backtest(self.data, ma_fast_period=bt.parameters["ma_fast_period"], ma_slow_period=bt.parameters["ma_slow_period"], ma_signal_period=bt.parameters["ma_signal_period"])
-
+            with mp.Pool(mp.cpu_count()) as pool:
+                results = pool.starmap(strategies.macd.backtest,
+                                    ((self.data, bt.parameters["ma_fast_period"], bt.parameters["ma_slow_period"],
+                                        bt.parameters["ma_signal_period"])
+                                        for bt in population))
+            for bt, (pnl, max_dd) in zip(population, results):
+                bt.pnl, bt.max_dd = pnl, max_dd
                 if bt.pnl == 0:
                     bt.pnl = -float("inf")
                     bt.max_dd = float("inf")
-
             return population
 
         elif self.strategy == "rsi":
