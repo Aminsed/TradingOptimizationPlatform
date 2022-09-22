@@ -302,15 +302,25 @@ class Nsga2:
             return population
 
         elif self.strategy == "ichimoku":
-
-            for bt in population:
-                bt.pnl, bt.max_dd = strategies.ichimoku.backtest(self.data, tenkan_period=bt.parameters["tenkan"], kijun_period=bt.parameters["kijun"])
-
+            with mp.Pool(mp.cpu_count()) as pool:
+                results = pool.starmap(strategies.ichimoku.backtest,
+                                    ((self.data, bt.parameters["tenkan"], bt.parameters["kijun"])
+                                        for bt in population))
+            for bt, (pnl, max_dd) in zip(population, results):
+                bt.pnl, bt.max_dd = pnl, max_dd
                 if bt.pnl == 0:
                     bt.pnl = -float("inf")
                     bt.max_dd = float("inf")
-
             return population
+
+            # for bt in population:
+            #     bt.pnl, bt.max_dd = strategies.ichimoku.backtest(self.data, tenkan_period=bt.parameters["tenkan"], kijun_period=bt.parameters["kijun"])
+
+            #     if bt.pnl == 0:
+            #         bt.pnl = -float("inf")
+            #         bt.max_dd = float("inf")
+
+            # return population
 
         elif self.strategy == "sup_res":
 
