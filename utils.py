@@ -22,8 +22,8 @@ STRAT_PARAMS = {
         "stop_loss": {"name": "Stop Loss %", "type": float, "min": 2, "max": 40, "decimals": 2},
     },
     "sma": {
-        "slow_ma": {"name": "Slow MA Period", "type": int, "min": 2, "max": 500},
-        "fast_ma": {"name": "Fast MA Period", "type": int, "min": 2, "max": 500},
+        "slow_ma": {"name": "Slow MA Period", "type": int, "min": 2, "max": 1000},
+        "fast_ma": {"name": "Fast MA Period", "type": int, "min": 2, "max": 1000},
         },
     "psar": {
         "initial_acc": {"name": "Initial Acceleration", "type": float, "min": 0.01, "max": 1.0, "decimals": 2},
