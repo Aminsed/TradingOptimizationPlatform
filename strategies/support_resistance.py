@@ -12,10 +12,9 @@ pd.set_option("display.max_rows", None)
 pd.set_option("display.width", 1000)
 
 
-def backtest(pd_df: pd.DataFrame, min_points: int, min_diff_points: int, rounding_nb: float, take_profit: float,
+def backtest(df: pd.DataFrame, min_points: int, min_diff_points: int, rounding_nb: float, take_profit: float,
              stop_loss: float):
     
-    df = cudf.DataFrame.from_pandas(pd_df)
     candle_length = df.iloc[1].name - df.iloc[0].name
 
     pnl = 0
