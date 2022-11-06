@@ -20,7 +20,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
     data = data.dropna()
     
     number_of_trades = 0
-    balance = 1
+    balance = 100
     #percentage amount of available balance used for each trade
     invest_per_trade_percent = 100
     open_orders = []
@@ -28,6 +28,8 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
     trailing_stoploss = []
     
     for i in range(1, len(data)):
+        if balance <= 50:
+            break
         invest_per_trade = balance * invest_per_trade_percent / 100
         if open_orders:
             if open_orders[0]["trade_side"]==1:
