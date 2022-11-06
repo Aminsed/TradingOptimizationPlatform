@@ -37,12 +37,14 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                     balance += (data['close'].iloc[i] - open_orders[0]["trade_entry_price"])*invest_per_trade
                     open_orders = []
                     trailing_stoploss = []
+                    number_of_trades += 1
 
                 ###check stoploss level for long                           
                 elif open_orders[0]["stoploss"] > data['low'].iloc[i]:
                     balance += (data['close'].iloc[i] - open_orders[0]["trade_entry_price"])*invest_per_trade
                     open_orders = []
                     trailing_stoploss = []
+                    number_of_trades += 1
 
                 ### update trailing stoploss for long                        
                 elif data['high'].iloc[i] > data['high'].iloc[i-1]:
@@ -61,7 +63,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                     balance += (open_orders[0]["trade_entry_price"] - data['close'].iloc[i])*invest_per_trade
                     open_orders = []
                     trailing_stoploss = []
-                    #number_of_trades += 1
+                    number_of_trades += 1
 
 
                 ###check stoploss for short                      
