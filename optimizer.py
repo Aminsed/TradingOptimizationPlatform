@@ -18,6 +18,7 @@ import strategies.support_resistance
 import strategies.macd
 import strategies.rsi
 import strategies.bb
+import strategies.sma_sl_tp
 
 
 
@@ -36,7 +37,7 @@ class Nsga2:
 
         self.population_params = []
 
-        if self.strategy in ["obv", "ichimoku", "sup_res", "macd", "rsi", "bb"]:
+        if self.strategy in ["obv", "ichimoku", "sup_res", "macd", "rsi", "bb", "sma_sl_tp"]:
             h5_db = Hdf5Client(exchange)
             self.data = h5_db.get_data(symbol, from_time, to_time)
             self.data = resample_timeframe(self.data, tf)
@@ -176,6 +177,9 @@ class Nsga2:
         elif self.strategy == "bb":
             pass
 
+        elif self.strategy == "sma_sl_tp":
+            pass
+
         elif self.strategy == "ichimoku":
             params["kijun"] = max(params["kijun"], params["tenkan"])
 
@@ -306,6 +310,21 @@ class Nsga2:
                 results = pool.starmap(strategies.ichimoku.backtest,
                                     ((self.data, bt.parameters["tenkan"], bt.parameters["kijun"])
                                         for bt in population))
+            for bt, (pnl, max_dd) in zip(population, results):
+                bt.pnl, bt.max_dd = pnl, max_dd
+                if bt.pnl == 0:
+                    bt.pnl = -float("inf")
+                    bt.max_dd = float("inf")
+            return population
+
+        elif self.strategy == "sma_sl_tp":
+            with mp.Pool(mp.cpu_count()) as pool:
+                results = pool.starmap(strategies.sma_sl_tp.backtest,
+                                    ((self.data, bt.parameters["slow_ma_period"], bt.parameters["fast_ma_period"],
+                                    bt.parameters["atr_period"], bt.parameters["takeprofit"], 
+                                    bt.parameters["stoploss"])
+                                        for bt in population))
+
             for bt, (pnl, max_dd) in zip(population, results):
                 bt.pnl, bt.max_dd = pnl, max_dd
                 if bt.pnl == 0:
