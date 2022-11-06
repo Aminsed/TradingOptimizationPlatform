@@ -89,14 +89,11 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                 if pending_order["trade_entry_price"] < data['high'].iloc[i]:
                     open_orders.append(pending_order)
                     pending_order = {}
-                    number_of_trades += 1
-                    
 
             elif pending_order["trade_side"]==-1:
                 if pending_order["trade_entry_price"] > data['low'].iloc[i]:
                     open_orders.append(pending_order)
                     pending_order = {}
-                    number_of_trades += 1
             else:
                 pending_order = {}
                     
