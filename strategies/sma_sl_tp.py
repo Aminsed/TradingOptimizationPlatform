@@ -95,6 +95,8 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                     open_orders.append(pending_order)
                     pending_order = {}
                     number_of_trades += 1
+            else:
+                pending_order = {}
                     
         
         if not pending_order:
