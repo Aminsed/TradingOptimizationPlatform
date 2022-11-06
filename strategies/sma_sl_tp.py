@@ -52,7 +52,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                         if data['high'].iloc[i] > max(trailing_stoploss):
                             dist = data['high'].iloc[i] - max(trailing_stoploss) 
                             trailing_stoploss.append(data['high'].iloc[i])
-                            open_orders[0]["stoploss"] = open_orders[0]["stoploss"]+abs(dist)
+                            open_orders[0]["stoploss"] += abs(dist)
 
 
             elif open_orders[0]["trade_side"]==-1:
@@ -79,7 +79,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                         if data['low'].iloc[i] < min(trailing_stoploss):
                             dist = min(trailing_stoploss) - data['low'].iloc[i] 
                             trailing_stoploss.append(data['low'].iloc[i])
-                            open_orders[0]["stoploss"] = open_orders[0]["stoploss"]-abs(dist)
+                            open_orders[0]["stoploss"] -= abs(dist)
                                 
         #create an active (open) order
         if pending_order and len(open_orders)== 0:
