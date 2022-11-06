@@ -8,7 +8,7 @@ pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
 pd.set_option("display.width", 1000)
 
-def simple_moving_average_strategy(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period: int,atr_period: int,takeprofit: float ,stoploss: float) -> typing.Tuple[float, float]:
+def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period: int,atr_period: int,takeprofit: float ,stoploss: float) -> typing.Tuple[float, float]:
 
     data['low'] = data['low'].astype('float')
     data['high'] = data['high'].astype('float')
