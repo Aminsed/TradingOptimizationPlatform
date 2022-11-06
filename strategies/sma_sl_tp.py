@@ -29,6 +29,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
     
     for i in range(1, len(data)):
         if balance <= 50:
+            balance = 0;
             break
         invest_per_trade = balance * invest_per_trade_percent / 100
         if open_orders:
