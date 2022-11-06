@@ -4,8 +4,8 @@ import pandas as pd
 import numpy as np
 
 
-# import matplotlib.pyplot as plt
-# import mplfinance as mpf
+import matplotlib.pyplot as plt
+import mplfinance as mpf
 
 pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
@@ -133,8 +133,8 @@ def backtest(df: pd.DataFrame, min_points: int, min_diff_points: int, rounding_n
             max_pnl = max(max_pnl, pnl)
             max_drawdown = max(max_drawdown, max_pnl - pnl)
 
-    # mpf.plot(df, type="candle", style="charles", alines=dict(alines=levels["resistances"] + levels["supports"]))
-    # plt.show()
+    mpf.plot(df, type="candle", style="charles", alines=dict(alines=levels["resistances"] + levels["supports"]))
+    plt.show()
 
     return pnl, max_drawdown
 

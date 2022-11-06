@@ -1,40 +1,115 @@
 import pandas as pd
 import numpy as np
+import typing
+import talib
 
 
 pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
 pd.set_option("display.width", 1000)
 
+def simple_moving_average_strategy(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period: int,atr_period: int,takeprofit: float ,stoploss: float) -> typing.Tuple[float, float]:
 
-def backtest(df: pd.DataFrame, slow_ma_period: int, fast_ma_period, atr_period: int, stoploss_multiplier: float, takeprofit_multiplier: float):
+    data['low'] = data['low'].astype('float')
+    data['high'] = data['high'].astype('float')
+    data['close'] = data['close'].astype('float')
+    data['slow_ma'] = data['close'].rolling(window=slow_ma_period).mean()
+    data['fast_ma'] = data['close'].rolling(window=fast_ma_period).mean()
+    data["signal"] = np.where(data["fast_ma"] > data["slow_ma"], 1, -1)
+    data['atr'] = talib.ATR(data['high'], data['low'], data['close'], timeperiod=atr_period)
+    data = data.dropna()
+    
+    number_of_trades = 0
+    balance = 1
+    #percentage amount of available balance used for each trade
+    invest_per_trade_percent = 100
+    open_orders = []
+    pending_order={}
+    trailing_stoploss = []
+    
+    for i in range(1, len(data)):
+        invest_per_trade = balance * invest_per_trade_percent / 100
+        if open_orders:
+            if open_orders[0]["trade_side"]==1:
 
-    df["slow_ma"] = round(df["close"].rolling(window=slow_ma_period).mean(), 2)
-    df["fast_ma"] = round(df["close"].rolling(window=fast_ma_period).mean(), 2)
-    df["atr"] = round(df["high"].rolling(window=atr_period).max() - df["low"].rolling(window=atr_period).min(), 2)
+                ###check take profit for long                 
+                if open_orders[0]["takeprofit"] < data['high'].iloc[i]:
+                    balance += (data['close'].iloc[i] - open_orders[0]["trade_entry_price"])*invest_per_trade
+                    open_orders = []
+                    trailing_stoploss = []
 
-    df["stoploss"] = df["atr"] * stoploss_multiplier
-    df["takeprofit"] = df["atr"] * takeprofit_multiplier
+                ###check stoploss level for long                           
+                elif open_orders[0]["stoploss"] > data['low'].iloc[i]:
+                    balance += (data['close'].iloc[i] - open_orders[0]["trade_entry_price"])*invest_per_trade
+                    open_orders = []
+                    trailing_stoploss = []
 
-    df["long_entry"] = np.logical_and(df["slow_ma"] > df["fast_ma"], df["close"] > df["slow_ma"])
-    df["short_entry"] = np.logical_and(df["slow_ma"] < df["fast_ma"], df["close"] < df["slow_ma"])
+                ### update trailing stoploss for long                        
+                elif data['high'].iloc[i] > data['high'].iloc[i-1]:
+                        if len(trailing_stoploss) == 0:
+                            trailing_stoploss.append(open_orders[0]["stoploss"])
+                            
+                        if data['high'].iloc[i] > max(trailing_stoploss):
+                            dist = data['high'].iloc[i] - max(trailing_stoploss) 
+                            trailing_stoploss.append(data['high'].iloc[i])
+                            open_orders[0]["stoploss"] = open_orders[0]["stoploss"]+abs(dist)
 
-    df["long_exit"] = np.logical_or(df["close"] < df["slow_ma"] - df["stoploss"], df["close"] > df["slow_ma"] + df["takeprofit"])
-    df["short_exit"] = np.logical_or(df["close"] > df["slow_ma"] + df["stoploss"], df["close"] < df["slow_ma"] - df["takeprofit"])
 
-    df["signal"] = np.nan
+            elif open_orders[0]["trade_side"]==-1:
+                ###check take profit for short
+                if open_orders[0]["takeprofit"] > data['low'].iloc[i]:
+                    balance += (open_orders[0]["trade_entry_price"] - data['close'].iloc[i])*invest_per_trade
+                    open_orders = []
+                    trailing_stoploss = []
+                    #number_of_trades += 1
 
-    df.loc[df["long_entry"], "signal"] = 1
-    df.loc[df["short_entry"], "signal"] = -1
-    df.loc[df["long_exit"], "signal"] = 0
-    df.loc[df["short_exit"], "signal"] = 0
 
-    df["signal"] = df["signal"].fillna(method="ffill")
+                ###check stoploss for short                      
+                elif open_orders[0]["stoploss"] > data['low'].iloc[i]:
+                    balance += (open_orders[0]["trade_entry_price"] - data['close'].iloc[i])*invest_per_trade
+                    open_orders = []
+                    trailing_stoploss = []
+                    number_of_trades += 1
 
-    df["close_change"] = df["close"].pct_change()
-    df["pnl"] = df["close_change"] * df["signal"]
-    df["cum_pnl"] = df["pnl"].cumsum()
-    df["max_cum_pnl"] = df["cum_pnl"].cummax()
-    df["drawdown"] = df["max_cum_pnl"] - df["cum_pnl"]
+                ###update stoploss for short
+                elif i and open_orders:    
+                    if data['low'].iloc[i] < data['low'].iloc[i-1]:
+                        if len(trailing_stoploss) == 0:
+                            trailing_stoploss.append(open_orders[0]["stoploss"])
+                        if data['low'].iloc[i] < min(trailing_stoploss):
+                            dist = min(trailing_stoploss) - data['low'].iloc[i] 
+                            trailing_stoploss.append(data['low'].iloc[i])
+                            open_orders[0]["stoploss"] = open_orders[0]["stoploss"]+abs(dist)
+                                
+        #create an active (open) order
+        if pending_order and len(open_orders)== 0:
+            if pending_order["trade_side"]==1:
+                if pending_order["trade_entry_price"] < data['high'].iloc[i]:
+                    open_orders.append(pending_order)
+                    pending_order = {}
+                    number_of_trades += 1
+                    
 
-    return df["pnl"].sum(), df["drawdown"].max()
+            elif pending_order["trade_side"]==-1:
+                if pending_order["trade_entry_price"] > data['low'].iloc[i]:
+                    open_orders.append(pending_order)
+                    pending_order = {}
+                    number_of_trades += 1
+                    
+        
+        if not pending_order:
+            if data['signal'].iloc[i] == 1:
+                trade_entry_price = data['close'].iloc[i]
+                sl = (data['close'].iloc[i])-((data['atr'].iloc[i])*stoploss)
+                tp = data['close'].iloc[i] + ((data['atr'].iloc[i])*takeprofit)
+                pending_order = {"order_id":i,"trade_side":1,"trade_entry_price":trade_entry_price,
+                                "stoploss":sl, "takeprofit":tp}
+
+            if data['signal'].iloc[i] == -1:
+                trade_entry_price = data['close'].iloc[i]
+                sl = (data['close'].iloc[i])+((data['atr'].iloc[i])*stoploss)
+                tp = data['close'].iloc[i] - ((data['atr'].iloc[i])*takeprofit)
+                pending_order = {"order_id":i,"trade_side":-1,"trade_entry_price":trade_entry_price,
+                                "stoploss":sl,"takeprofit":tp}
+
+    return balance, number_of_trades
