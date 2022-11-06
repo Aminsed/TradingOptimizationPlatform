@@ -9,6 +9,7 @@ import strategies.support_resistance
 import strategies.macd
 import strategies.rsi
 import strategies.bb
+import strategies.sma_sl_tp
 
 def run(exchange: str, symbol: str, strategy: str, tf: str, from_time: int, to_time: int):
 
@@ -81,6 +82,17 @@ def run(exchange: str, symbol: str, strategy: str, tf: str, from_time: int, to_t
         pnl, max_drawdown = strategies.bb.backtest(data, ma_period=params["ma_period"], std_multiplier=params["std_multiplier"])
 
         return pnl, max_drawdown
+
+    elif strategy == "sma_sl_tp":
+        h5_db = Hdf5Client(exchange)
+        data = h5_db.get_data(symbol, from_time, to_time)
+        data = resample_timeframe(data, tf)
+
+        pnl, max_drawdown = strategies.sma_sl_tp.backtest(data, slow_ma_period=params["slow_ma_period"], fast_ma_period=params["fast_ma_period"],
+        atr_period=params["atr_period"], takeprofit=params["takeprofit"], stoploss=params["stoploss"])
+
+        return pnl, max_drawdown
+
 
     elif strategy == "sma":
         lib = get_library()
