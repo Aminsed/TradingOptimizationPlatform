@@ -34,6 +34,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
         invest_per_trade = balance * invest_per_trade_percent / 100
         if open_orders:
             if open_orders[0]["trade_side"]==1:
+                ###TODO:check signal change and close if signal changed
 
                 ###check take profit for long                 
                 if open_orders[0]["takeprofit"] < data['high'].iloc[i]:
@@ -61,6 +62,8 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
 
 
             elif open_orders[0]["trade_side"]==-1:
+                ###TODO:check signal change and close if signal changed
+
                 ###check take profit for short
                 if open_orders[0]["takeprofit"] > data['low'].iloc[i]:
                     balance += (open_orders[0]["trade_entry_price"] - open_orders[0]["takeprofit"])*invest_per_trade
