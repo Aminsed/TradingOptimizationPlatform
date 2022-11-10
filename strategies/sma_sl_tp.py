@@ -34,9 +34,16 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
         invest_per_trade = balance * invest_per_trade_percent / 100
         if open_orders:
             if open_orders[0]["trade_side"]==1:
+                
+                ###check if signal is still valid
+                if data['signal'].iloc[i] == -1:
+                    balance += (data["open"].iloc[i] - open_orders[0]["trade_entry_price"])*invest_per_trade
+                    open_orders = []
+                    trailing_stoploss = []
+                    number_of_trades += 1
 
                 ###check take profit for long                 
-                if open_orders[0]["takeprofit"] < data['high'].iloc[i]:
+                elif open_orders[0]["takeprofit"] < data['high'].iloc[i]:
                     balance += (open_orders[0]["takeprofit"] - open_orders[0]["trade_entry_price"])*invest_per_trade
                     open_orders = []
                     trailing_stoploss = []
@@ -61,6 +68,15 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
 
 
             elif open_orders[0]["trade_side"]==-1:
+                
+                ###check if signal is still valid
+                if data['signal'].iloc[i] == 1:
+                    balance += (open_orders[0]["trade_entry_price"] - data["open"].iloc[i])*invest_per_trade
+                    open_orders = []
+                    trailing_stoploss = []
+                    number_of_trades += 1
+
+
                 ###check take profit for short
                 if open_orders[0]["takeprofit"] > data['low'].iloc[i]:
                     balance += (open_orders[0]["trade_entry_price"] - open_orders[0]["takeprofit"])*invest_per_trade
