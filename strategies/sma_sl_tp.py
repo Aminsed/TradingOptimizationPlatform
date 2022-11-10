@@ -79,7 +79,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
 
 
                 ###check take profit for short
-                if open_orders[0]["takeprofit"] > data['low'].iloc[i]:
+                elif open_orders[0]["takeprofit"] > data['low'].iloc[i]:
                     balance += (open_orders[0]["trade_entry_price"] - open_orders[0]["takeprofit"])*invest_per_trade
                     open_orders = []
                     trailing_stoploss = []
