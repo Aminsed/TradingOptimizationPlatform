@@ -29,7 +29,7 @@ h5_db = Hdf5Client(exchange)
 data = h5_db.get_data(symbol, from_time, to_time)
 data = resample_timeframe(data, tf)
 
-df = pd.read_csv("2032.csv", index_col=False)
+df = pd.read_csv("result.csv", index_col=False)
 
 
 df["bt_pnl"] = df["PNL"]

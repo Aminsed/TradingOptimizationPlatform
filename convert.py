@@ -1,7 +1,7 @@
 import pandas as pd
 
 #read the text file
-with open('2032.txt') as f:
+with open('result.txt') as f:
     data = f.readlines()
 
 #extract the variables
