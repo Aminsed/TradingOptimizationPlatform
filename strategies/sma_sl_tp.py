@@ -35,15 +35,14 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
         invest_per_trade = balance * invest_per_trade_percent / 100
         if open_orders:
             if open_orders[0]["trade_side"]==1:
-                
-                ###check if signal is still valid
-                if data['signal'].iloc[i] == -1:
-                    balance += (data["open"].iloc[i] - open_orders[0]["trade_entry_price"])*invest_per_trade
+
+                ###check stoploss level for long                           
+                if open_orders[0]["stoploss"] > data['low'].iloc[i]:
+                    balance += (open_orders[0]["stoploss"] - open_orders[0]["trade_entry_price"])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
                     trailing_stoploss = []
                     number_of_trades += 1
-
 
                 ###check take profit for long                 
                 elif open_orders[0]["takeprofit"] < data['high'].iloc[i]:
@@ -52,10 +51,10 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                     open_orders = []
                     trailing_stoploss = []
                     number_of_trades += 1
-
-                ###check stoploss level for long                           
-                elif open_orders[0]["stoploss"] > data['low'].iloc[i]:
-                    balance += (open_orders[0]["stoploss"] - open_orders[0]["trade_entry_price"])*invest_per_trade
+                
+                ###check if signal is still valid
+                elif data['signal'].iloc[i] == -1:
+                    balance += (data["close"].iloc[i] - open_orders[0]["trade_entry_price"])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
                     trailing_stoploss = []
@@ -64,19 +63,21 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                 ### update trailing stoploss for long                        
                 elif data['high'].iloc[i] > data['high'].iloc[i-1]:
                         if len(trailing_stoploss) == 0:
-                            trailing_stoploss.append(open_orders[0]["stoploss"])
-                            
-                        if data['high'].iloc[i] > max(trailing_stoploss):
+                            trailing_stoploss.append(data['high'].iloc[i])
+                            dist = data['high'].iloc[i] - data['high'].iloc[i-1]
+                            open_orders[0]["stoploss"] += abs(dist)
+
+                        elif data['high'].iloc[i] > max(trailing_stoploss):
                             dist = data['high'].iloc[i] - max(trailing_stoploss) 
                             trailing_stoploss.append(data['high'].iloc[i])
                             open_orders[0]["stoploss"] += abs(dist)
 
 
             elif open_orders[0]["trade_side"]==-1:
-                
-                ###check if signal is still valid
-                if data['signal'].iloc[i] == 1:
-                    balance += (open_orders[0]["trade_entry_price"] - data["open"].iloc[i])*invest_per_trade
+
+                ###check stoploss for short                      
+                if open_orders[0]["stoploss"] > data['low'].iloc[i]:
+                    balance += (open_orders[0]["trade_entry_price"] - open_orders[0]["stoploss"])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
                     trailing_stoploss = []
@@ -90,22 +91,25 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                     open_orders = []
                     trailing_stoploss = []
                     number_of_trades += 1
-
-
-                ###check stoploss for short                      
-                elif open_orders[0]["stoploss"] > data['low'].iloc[i]:
-                    balance += (open_orders[0]["trade_entry_price"] - open_orders[0]["stoploss"])*invest_per_trade
+                
+                ###check if signal is still valid
+                if data['signal'].iloc[i] == 1:
+                    balance += (open_orders[0]["trade_entry_price"] - data["close"].iloc[i])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
                     trailing_stoploss = []
                     number_of_trades += 1
 
+
                 ###update stoploss for short
                 elif i and open_orders:    
                     if data['low'].iloc[i] < data['low'].iloc[i-1]:
                         if len(trailing_stoploss) == 0:
-                            trailing_stoploss.append(open_orders[0]["stoploss"])
-                        if data['low'].iloc[i] < min(trailing_stoploss):
+                            trailing_stoploss.append(data['low'].iloc[i])
+                            dist = data['low'].iloc[i] - data['low'].iloc[i-i]
+                            open_orders[0]["stoploss"] -= abs(dist)
+                        
+                        elif data['low'].iloc[i] < min(trailing_stoploss):
                             dist = min(trailing_stoploss) - data['low'].iloc[i] 
                             trailing_stoploss.append(data['low'].iloc[i])
                             open_orders[0]["stoploss"] -= abs(dist)
@@ -123,21 +127,23 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                     pending_order = {}
             else:
                 pending_order = {}
-                    
-        
+
+
         if not pending_order:
             if data['signal'].iloc[i] == 1:
                 trade_entry_price = data['close'].iloc[i]
-                sl = (data['close'].iloc[i])-((data['atr'].iloc[i])*stoploss)
+                sl = data['close'].iloc[i] - ((data['atr'].iloc[i])*stoploss)
                 tp = data['close'].iloc[i] + ((data['atr'].iloc[i])*takeprofit)
-                pending_order = {"order_id":i,"trade_side":1,"trade_entry_price":trade_entry_price,
+                pending_order = {"order_id":i,"trade_side":1, "trade_entry_price":trade_entry_price,
                                 "stoploss":sl, "takeprofit":tp}
 
             if data['signal'].iloc[i] == -1:
                 trade_entry_price = data['close'].iloc[i]
-                sl = (data['close'].iloc[i])+((data['atr'].iloc[i])*stoploss)
+                sl = data['close'].iloc[i] + ((data['atr'].iloc[i])*stoploss)
                 tp = data['close'].iloc[i] - ((data['atr'].iloc[i])*takeprofit)
-                pending_order = {"order_id":i,"trade_side":-1,"trade_entry_price":trade_entry_price,
-                                "stoploss":sl,"takeprofit":tp}
+                pending_order = {"order_id":i, "trade_side":-1, "trade_entry_price":trade_entry_price,
+                                "stoploss":sl, "takeprofit":tp}
+    
+    tas = 1 / (takeprofit + atr_period + stoploss)
 
-    return balance, number_of_trades
+    return balance, tas
