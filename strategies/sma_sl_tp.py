@@ -144,6 +144,6 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                 pending_order = {"order_id":i, "trade_side":-1, "trade_entry_price":trade_entry_price,
                                 "stoploss":sl, "takeprofit":tp}
     
-    tas = 1 / (takeprofit + atr_period + stoploss)
+    tas = number_of_trades / (takeprofit + atr_period + stoploss)
 
     return balance, tas
