@@ -93,7 +93,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                     number_of_trades += 1
                 
                 ###check if signal is still valid
-                if data['signal'].iloc[i] == 1:
+                elif data['signal'].iloc[i] == 1:
                     balance += (open_orders[0]["trade_entry_price"] - data["close"].iloc[i])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
