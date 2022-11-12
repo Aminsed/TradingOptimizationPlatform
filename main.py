@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
             p_population = nsga2.create_new_population(fronts)
 
-            print(f"\r{int(g + 1) / generations * 100}%", end='')
+            print(f"\r{format(int(g + 1) / generations * 100, '.2f')}%", end='')
             g += 1
 
         print("\n")
