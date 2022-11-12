@@ -144,7 +144,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                 pending_order = {"order_id":i, "trade_side":-1, "trade_entry_price":trade_entry_price,
                                 "stoploss":sl, "takeprofit":tp}
     
-    if number_of_trades == 0:
+    if number_of_trades < 50:
         return 0, 0
     else:
         return balance, number_of_trades
