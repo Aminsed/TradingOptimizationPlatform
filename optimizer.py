@@ -178,7 +178,7 @@ class Nsga2:
             pass
 
         elif self.strategy == "sma_sl_tp":
-            params["slow_ma"] = max(params["slow_ma"], params["fast_ma"])
+            params["slow_ma_period"] = max(params["slow_ma_period"], params["fast_ma_period"])
 
         elif self.strategy == "ichimoku":
             params["kijun"] = max(params["kijun"], params["tenkan"])
