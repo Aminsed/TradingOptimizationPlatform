@@ -320,8 +320,8 @@ class Nsga2:
         elif self.strategy == "sma_sl_tp":
             with mp.Pool(mp.cpu_count()) as pool:
                 results = pool.starmap(strategies.sma_sl_tp.backtest,
-                                    ((self.data, bt.parameters["slow_ma_period"], bt.parameters["fast_ma_period"],
-                                    bt.parameters["atr_period"], bt.parameters["takeprofit"], 
+                                    ((self.data, bt.parameters["slow_ma_period"], 
+                                    bt.parameters["fast_ma_period"], bt.parameters["takeprofit"], 
                                     bt.parameters["stoploss"])
                                         for bt in population))
 

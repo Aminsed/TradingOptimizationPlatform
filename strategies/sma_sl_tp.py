@@ -8,7 +8,7 @@ pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
 pd.set_option("display.width", 1000)
 
-def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period: int,atr_period: int,takeprofit: float ,stoploss: float) -> typing.Tuple[float, float]:
+def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period: int,takeprofit: float ,stoploss: float) -> typing.Tuple[float, float]:
 
     data['low'] = data['low'].astype('float')
     data['high'] = data['high'].astype('float')
@@ -16,7 +16,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
     data['slow_ma'] = data['close'].rolling(window=slow_ma_period).mean()
     data['fast_ma'] = data['close'].rolling(window=fast_ma_period).mean()
     data["signal"] = np.where(data["fast_ma"] > data["slow_ma"], 1, -1)
-    data['atr'] = talib.ATR(data['high'], data['low'], data['close'], timeperiod=atr_period)
+    data['atr'] = talib.ATR(data['high'], data['low'], data['close'], timeperiod=fast_ma_period)
     data = data.dropna()
     
     number_of_trades = 0
