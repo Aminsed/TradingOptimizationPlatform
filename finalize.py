@@ -17,7 +17,7 @@ from utils import get_library, resample_timeframe, STRAT_PARAMS
 
 import strategies.sma_sl_tp
 
-from_time = "2021-10-02"
+from_time = "2022-05-20"
 from_time = int(datetime.datetime.strptime(from_time, "%Y-%m-%d").timestamp() * 1000)
 to_time = int(datetime.datetime.now().timestamp() * 1000)
 exchange = "Dukascopy"
