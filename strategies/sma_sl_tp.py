@@ -8,16 +8,17 @@ pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
 pd.set_option("display.width", 1000)
 
-def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period: int,takeprofit: float ,stoploss: float) -> typing.Tuple[float, float]:
-
+def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period: int,takeprofit: float ,stoploss: float) -> typing.Tuple[float, float]:
+    data = data1.copy()
     data['low'] = data['low'].astype('float')
     data['high'] = data['high'].astype('float')
     data['close'] = data['close'].astype('float')
     data['slow_ma'] = data['close'].rolling(window=slow_ma_period).mean()
     data['fast_ma'] = data['close'].rolling(window=fast_ma_period).mean()
-    data["signal"] = np.where(data["fast_ma"] > data["slow_ma"], 1, -1)
     data['atr'] = talib.ATR(data['high'], data['low'], data['close'], timeperiod=fast_ma_period)
-    data = data.dropna()
+    data["signal"] = np.where(data["fast_ma"] > data["slow_ma"], 1, -1)
+
+    
     
     number_of_trades = 0
     balance = 100
@@ -30,8 +31,9 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
     
     for i in range(1, len(data)):
         if balance <= 50:
-            balance = 0;
-            break
+            continue
+            # balance = 0;
+            # break
         invest_per_trade = balance * invest_per_trade_percent / 100
         if open_orders:
             if open_orders[0]["trade_side"]==1:
@@ -144,7 +146,7 @@ def backtest(data: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period:
                 pending_order = {"order_id":i, "trade_side":-1, "trade_entry_price":trade_entry_price,
                                 "stoploss":sl, "takeprofit":tp}
     #change to 0 in final backtest
-    if number_of_trades < 120 or balance < 100:
-        return 0, 0
-    else:
-        return balance, number_of_trades
+    # if number_of_trades < 120 or balance < 100:
+    #     return 0, 0
+    # else:
+    return balance, number_of_trades / balance

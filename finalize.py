@@ -17,7 +17,7 @@ from utils import get_library, resample_timeframe, STRAT_PARAMS
 
 import strategies.sma_sl_tp
 
-from_time = "2022-05-20"
+from_time = "2022-01-01"
 from_time = int(datetime.datetime.strptime(from_time, "%Y-%m-%d").timestamp() * 1000)
 to_time = int(datetime.datetime.now().timestamp() * 1000)
 exchange = "Dukascopy"
@@ -28,8 +28,8 @@ tf = "1h"
 h5_db = Hdf5Client(exchange)
 data = h5_db.get_data(symbol, from_time, to_time)
 data = resample_timeframe(data, tf)
-
-df = pd.read_csv("result.csv", index_col=False)
+print(data.head())
+df = pd.read_csv("result.csv")
 
 
 df["bt_pnl"] = df["PNL"]
@@ -40,12 +40,11 @@ for i in range(len(df)):
 
     slow_ma_period = df["slow_ma_period"].iloc[i]
     fast_ma_period = df["fast_ma_period"].iloc[i]
-    atr_period = df["atr_period"].iloc[i]
     takeprofit = df["takeprofit"].iloc[i]
     stoploss = df["stoploss"].iloc[i]
 
-    df["bt_pnl"].iloc[i], df["bt_dd"].iloc[i] = strategies.sma_sl_tp.backtest(data, slow_ma_period, fast_ma_period,
-    atr_period, takeprofit, stoploss)
+    df["bt_pnl"].iloc[i], df["bt_dd"].iloc[i] = strategies.sma_sl_tp.backtest(data, slow_ma_period, 
+    fast_ma_period, takeprofit, stoploss)
 
 
 
