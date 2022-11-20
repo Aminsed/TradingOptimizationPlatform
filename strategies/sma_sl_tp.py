@@ -155,4 +155,4 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
         return 0, 0
     else:
         max_dd = max(balance_hist) - balance
-        return balance, (number_of_trades * max_dd) - (balance)
+        return balance, max_dd#(number_of_trades * max_dd) - (balance)
