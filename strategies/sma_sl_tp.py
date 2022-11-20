@@ -17,6 +17,7 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
     data['fast_ma'] = data['close'].rolling(window=fast_ma_period).mean()
     data['atr'] = talib.ATR(data['high'], data['low'], data['close'], timeperiod=fast_ma_period)
     data["signal"] = np.where(data["fast_ma"] > data["slow_ma"], 1, -1)
+    data = data.dropna()
 
     
     
