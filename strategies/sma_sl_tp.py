@@ -150,4 +150,4 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
     if number_of_trades == 0:
         return 0, 0
     else:
-        return balance, abs(number_of_trades / balance)
+        return balance, abs(number_of_trades / balance) * 1000
