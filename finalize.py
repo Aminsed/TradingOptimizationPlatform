@@ -17,7 +17,7 @@ from utils import get_library, resample_timeframe, STRAT_PARAMS
 
 import strategies.sma_sl_tp
 
-from_time = "2021-01-01"
+from_time = "2022-01-01"
 from_time = int(datetime.datetime.strptime(from_time, "%Y-%m-%d").timestamp() * 1000)
 to_time = int(datetime.datetime.now().timestamp() * 1000)
 exchange = "Dukascopy"
@@ -36,7 +36,6 @@ df["bt_dd"] = df["Max_Drawdown"]
 
 
 for i in range(len(df)):
-
     slow_ma_period = df["slow_ma_period"].iloc[i]
     fast_ma_period = df["fast_ma_period"].iloc[i]
     takeprofit = df["takeprofit"].iloc[i]
@@ -44,7 +43,6 @@ for i in range(len(df)):
 
     df["bt_pnl"].iloc[i], df["bt_dd"].iloc[i] = strategies.sma_sl_tp.backtest(data, slow_ma_period, 
     fast_ma_period, takeprofit, stoploss)
-    slow_ma_period = 0
     
 
 
