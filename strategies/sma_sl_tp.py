@@ -151,7 +151,7 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                 pending_order = {"order_id":i, "trade_side":-1, "trade_entry_price":trade_entry_price,
                                 "stoploss":sl, "takeprofit":tp}
     #change to 0 in final backtest
-    if number_of_trades <= 1:
+    if number_of_trades <= 90:
         return 0, 0
     else:
         max_dd = max(balance_hist) - balance
