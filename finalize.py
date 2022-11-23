@@ -38,11 +38,13 @@ df["bt_dd"] = df["Max_Drawdown"]
 for i in range(len(df)):
     slow_ma_period = df["slow_ma_period"].iloc[i]
     fast_ma_period = df["fast_ma_period"].iloc[i]
+    atr_period = df["atr_period"].iloc[i]
     takeprofit = df["takeprofit"].iloc[i]
     stoploss = df["stoploss"].iloc[i]
 
-    df["bt_pnl"].iloc[i], df["bt_dd"].iloc[i] = strategies.sma_sl_tp.backtest(data, slow_ma_period, 
-    fast_ma_period, takeprofit, stoploss)
+    df["bt_pnl"].iloc[i], df["bt_dd"].iloc[i] = strategies.sma_sl_tp.backtest(data, slow_ma_period, fast_ma_period,
+    atr_period, takeprofit, stoploss)
+
     
 
 

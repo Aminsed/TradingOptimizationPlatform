@@ -42,7 +42,8 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
         
         ###remove for validation
         if balance <= 50:
-            return 0, 0
+            balance, max_dd = 0, 0
+            break
         ###
 
         invest_per_trade = balance * invest_per_trade_percent / 100
@@ -158,10 +159,9 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                                 "stoploss":sl, "takeprofit":tp}
     
     # change in validation
-    if number_of_trades <= 90:
-        return 0, 0
-    ###
-    else:
-        max_dd = max(balance_hist) - balance
-        return balance, max_dd#(number_of_trades * max_dd) - (balance)
+    # if number_of_trades <= 90:
+    #     return 0, 0
+    # ###
+    max_dd = max(balance_hist) - balance
+    return balance, max_dd#(number_of_trades * max_dd) - (balance)
 
