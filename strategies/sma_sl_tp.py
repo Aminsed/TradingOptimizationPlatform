@@ -31,7 +31,7 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
     balance = 100
     #percentage amount of available balance used for each trade
     invest_per_trade_percent = 100
-    cost_per_trade_percent = 10
+    cost_per_trade_percent = 20
     open_orders = []
     pending_order={}
     trailing_stoploss = []
