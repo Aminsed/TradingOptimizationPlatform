@@ -41,8 +41,9 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
         balance_hist.append(balance)
         
         ##remove for validation
-        if balance < 50 or balance < (max(balance_hist)/2):
-            balance, max_dd = 0, max(balance_hist) - balance
+        temp_max_dd = max(balance_hist)
+        if balance < 50 or balance < (temp_max_dd/2):
+            balance, max_dd = 0, temp_max_dd - balance
             break
         ##
 
