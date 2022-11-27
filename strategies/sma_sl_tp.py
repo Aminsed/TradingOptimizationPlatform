@@ -30,8 +30,8 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
     number_of_trades = 0
     balance = 100
     #percentage amount of available balance used for each trade
-    invest_per_trade_percent = 100
-    cost_per_trade_percent = 20
+    invest_per_trade_percent = 10
+    cost_per_trade_percent = 3
     open_orders = []
     pending_order={}
     trailing_stoploss = []
@@ -41,9 +41,9 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
         balance_hist.append(balance)
         
         ###remove for validation
-        if balance <= 50:
-            balance, max_dd = 0, 0
-            break
+        # if balance <= 50:
+        #     balance, max_dd = 0, 0
+        #     break
         ###
 
         invest_per_trade = balance * invest_per_trade_percent / 100
@@ -151,7 +151,7 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                 pending_order = {"order_id":i,"trade_side":1, "trade_entry_price":trade_entry_price,
                                 "stoploss":sl, "takeprofit":tp}
 
-            if data['signal'].iloc[i] == -1:
+            elif data['signal'].iloc[i] == -1:
                 trade_entry_price = data['close'].iloc[i]
                 sl = data['close'].iloc[i] + ((data['atr'].iloc[i])*stoploss)
                 tp = data['close'].iloc[i] - ((data['atr'].iloc[i])*takeprofit)
