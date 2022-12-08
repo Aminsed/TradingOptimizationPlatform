@@ -50,6 +50,13 @@ STRAT_PARAMS = {
         "takeprofit": {"name": "Take Profit", "type": float, "min": 2.00, "max": 50, "decimals": 2},
         "stoploss": {"name": "Stop Loss", "type": float, "min": 2.00, "max": 50, "decimals": 2},
     },
+    "sma_sl_tp_fixed": {
+        "slow_ma_period": {"name": "Slow MA Period", "type": int, "min": 1, "max": 1000},
+        "fast_ma_period": {"name": "Fast MA Period", "type": int, "min": 1, "max": 1000},
+        "atr_period": {"name": "ATR Period", "type": int, "min": 100, "max": 1000},
+        "takeprofit": {"name": "Take Profit", "type": float, "min": 2.00, "max": 50, "decimals": 2},
+        "stoploss": {"name": "Stop Loss", "type": float, "min": 2.00, "max": 50, "decimals": 2},
+    },
 
 }
 

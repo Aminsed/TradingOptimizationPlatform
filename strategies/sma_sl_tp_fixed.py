@@ -54,7 +54,6 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                     balance += (open_orders[0]["stoploss"] - open_orders[0]["trade_entry_price"])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
-                    trailing_stoploss = []
                     number_of_trades += 1
 
                 ###check take profit for long                 
@@ -62,7 +61,6 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                     balance += (open_orders[0]["takeprofit"] - open_orders[0]["trade_entry_price"])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
-                    trailing_stoploss = []
                     number_of_trades += 1
                 
                 ###check if signal is still valid
@@ -70,20 +68,8 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                     balance += (data["close"].iloc[i] - open_orders[0]["trade_entry_price"])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
-                    trailing_stoploss = []
                     number_of_trades += 1
 
-                ### update trailing stoploss for long                        
-                elif data['high'].iloc[i] > data['high'].iloc[i-1]:
-                        if len(trailing_stoploss) == 0:
-                            trailing_stoploss.append(data['high'].iloc[i])
-                            dist = data['high'].iloc[i] - data['high'].iloc[i-1]
-                            open_orders[0]["stoploss"] += abs(dist)
-
-                        elif data['high'].iloc[i] > max(trailing_stoploss):
-                            dist = data['high'].iloc[i] - max(trailing_stoploss) 
-                            trailing_stoploss.append(data['high'].iloc[i])
-                            open_orders[0]["stoploss"] += abs(dist)
 
 
             elif open_orders[0]["trade_side"]==-1:
@@ -93,7 +79,6 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                     balance += (open_orders[0]["trade_entry_price"] - open_orders[0]["stoploss"])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
-                    trailing_stoploss = []
                     number_of_trades += 1
 
 
@@ -102,7 +87,6 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                     balance += (open_orders[0]["trade_entry_price"] - open_orders[0]["takeprofit"])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
-                    trailing_stoploss = []
                     number_of_trades += 1
                 
                 ###check if signal is still valid
@@ -110,22 +94,7 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                     balance += (open_orders[0]["trade_entry_price"] - data["close"].iloc[i])*invest_per_trade
                     balance -= (cost_per_trade_percent/100 * invest_per_trade)
                     open_orders = []
-                    trailing_stoploss = []
                     number_of_trades += 1
-
-
-                ###update stoploss for short
-                elif i and open_orders:    
-                    if data['low'].iloc[i] < data['low'].iloc[i-1]:
-                        if len(trailing_stoploss) == 0:
-                            trailing_stoploss.append(data['low'].iloc[i])
-                            dist = data['low'].iloc[i] - data['low'].iloc[i-i]
-                            open_orders[0]["stoploss"] -= abs(dist)
-                        
-                        elif data['low'].iloc[i] < min(trailing_stoploss):
-                            dist = min(trailing_stoploss) - data['low'].iloc[i] 
-                            trailing_stoploss.append(data['low'].iloc[i])
-                            open_orders[0]["stoploss"] -= abs(dist)
                                 
         #create an active (open) order
         if pending_order and len(open_orders)== 0:

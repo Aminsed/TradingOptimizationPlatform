@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
         # Strategy
 
-        available_strategies = ["obv", "ichimoku", "sup_res", "sma", "psar", "macd", "rsi", "bb", "sma_sl_tp"]
+        available_strategies = ["bb", "ichimoku", "macd", "obv", "psar", "rsi", "sma", "sma_sl_tp", "sma_sl_tp_fixed", "sup_res"]
 
         while True:
             strategy = input(f"Choose a strategy ({', '.join(available_strategies)}): ").lower()
