@@ -132,6 +132,7 @@ if __name__ == "__main__":
         p_population = nsga2.crowding_distance(p_population)
 
         g = 0
+        pbar = tqdm(total=generations)
         while g < generations:
 
             q_population = nsga2.create_offspring_population(p_population)
@@ -156,12 +157,16 @@ if __name__ == "__main__":
 
             p_population = nsga2.create_new_population(fronts)
 
-            print(f"\r{format(int(g + 1) / generations * 100, '.2f')}%", end='')
-            g += 1
+            # print(f"\r{format(int(g + 1) / generations * 100, '.2f')}%", end='')
+            # g += 1
+
+            
+            pbar.update(1)
+            g +=1
+        pbar.close()
 
 
 
-        print("\n")
 
         print("\n")
         
