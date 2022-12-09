@@ -8,6 +8,7 @@ from data_collector import collect_all
 from exchanges.binance import BinanceClient
 from exchanges.ftx import FtxClient
 from exchanges.dukascopy import DukascopyClient
+from tqdm import tqdm
 
 
 logger = logging.getLogger()
@@ -127,19 +128,14 @@ if __name__ == "__main__":
 
 
         p_population = nsga2.create_initial_population()
-        print("p_population = nsga2.create_initial_population()")
         p_population = nsga2.evaluate_population(p_population)
-        print("p_population = nsga2.evaluate_population(p_population)")
         p_population = nsga2.crowding_distance(p_population)
-        print("p_population = nsga2.crowding_distance(p_population)")
 
         g = 0
         while g < generations:
 
             q_population = nsga2.create_offspring_population(p_population)
-            print("q_population = nsga2.create_offspring_population(p_population)")
             q_population = nsga2.evaluate_population(q_population)
-            print("q_population = nsga2.evaluate_population(q_population)")
 
             r_population = p_population + q_population
 
@@ -155,7 +151,6 @@ if __name__ == "__main__":
 
 
             fronts = nsga2.non_dominated_sortings(population)
-            print("fronts = nsga2.non_dominated_sortings(population)")
             for j in range(len(fronts)):
                 fronts[j] = nsga2.crowding_distance(fronts[j])
 
@@ -163,6 +158,10 @@ if __name__ == "__main__":
 
             print(f"\r{format(int(g + 1) / generations * 100, '.2f')}%", end='')
             g += 1
+
+
+
+        print("\n")
 
         print("\n")
         
