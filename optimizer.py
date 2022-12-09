@@ -163,6 +163,11 @@ class Nsga2:
 
         return offspring_pop
 
+
+
+
+
+
     # Enforcing logical constraints. 
     # For example the slow MA value should always be higher than the fast MA.
     def _params_constraints(self, params: typing.Dict) -> typing.Dict:
