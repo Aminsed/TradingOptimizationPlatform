@@ -16,6 +16,7 @@ from database import Hdf5Client
 from utils import get_library, resample_timeframe, STRAT_PARAMS
 
 import strategies.sma_sl_tp
+import strategies.sma_sl_tp_fixed
 
 from_time = "2022-01-01"
 from_time = int(datetime.datetime.strptime(from_time, "%Y-%m-%d").timestamp() * 1000)
@@ -42,11 +43,11 @@ for i in range(len(df)):
     takeprofit = df["takeprofit"].iloc[i]
     stoploss = df["stoploss"].iloc[i]
 
-    # df["bt_pnl"].iloc[i], df["bt_dd"].iloc[i] = strategies.sma_sl_tp_fixed.backtest(data, slow_ma_period, fast_ma_period,
-    # atr_period, takeprofit, stoploss)
-
-    df["bt_pnl"].iloc[i], df["bt_dd"].iloc[i] = strategies.sma_sl_tp.backtest(data, slow_ma_period, fast_ma_period,
+    df["bt_pnl"].iloc[i], df["bt_dd"].iloc[i] = strategies.sma_sl_tp_fixed.backtest(data, slow_ma_period, fast_ma_period,
     atr_period, takeprofit, stoploss)
+
+    # df["bt_pnl"].iloc[i], df["bt_dd"].iloc[i] = strategies.sma_sl_tp.backtest(data, slow_ma_period, fast_ma_period,
+    # atr_period, takeprofit, stoploss)
 
     
 
