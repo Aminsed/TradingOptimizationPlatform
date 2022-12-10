@@ -126,7 +126,9 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                 tp = data['close'].iloc[i] - ((data['atr'].iloc[i])*takeprofit)
                 pending_order = {"order_id":i, "trade_side":-1, "trade_entry_price":trade_entry_price,
                                 "stoploss":sl, "takeprofit":tp}
-    
-
-    return balance, max(balance_hist) - balance
+    # remove in validation
+    if number_of_trades < 100:
+        return 0, max(balance_hist) - balance
+    else:
+        return balance, max(balance_hist) - balance
 
