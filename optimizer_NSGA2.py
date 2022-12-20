@@ -97,32 +97,15 @@ class Nsga2:
     def create_new_population(self, fronts: typing.List[BacktestResult]) -> typing.List[BacktestResult]:
         new_pop = []
 
-        # Calculate crowding distance for each solution in each front
         for front in fronts:
-            front = self.crowding_distance(front)
-
-        # Select solutions based on continuous crowded comparison operator
-        while len(new_pop) < self.population_size:
-            selected_front = None
-            selected_solution = None
-            min_distance = float("inf")
-
-            # Select front with minimum crowding distance
-            for front in fronts:
-                if len(front) == 0:
-                    continue
-                front_min_distance = min([s.crowding_distance for s in front])
-                if front_min_distance < min_distance:
-                    selected_front = front
-                    selected_solution = front[0]
-                    min_distance = front_min_distance
-
-            # Add selected solution to new population
-            new_pop.append(selected_solution)
-            selected_front.remove(selected_solution)
+            if len(new_pop) + len(front) > self.population_size:
+                max_individuals = self.population_size - len(new_pop)
+                if max_individuals > 0:
+                    new_pop += sorted(front, key=lambda x: getattr(x, "crowding_distance"))[-max_individuals:]
+            else:
+                new_pop += front 
 
         return new_pop
-
 
 
     def create_offspring_population(self, population: typing.List[BacktestResult]) -> typing.List[BacktestResult]:

@@ -23,7 +23,7 @@ import strategies.sma_sl_tp_fixed
 
 
 
-class Nsga2:
+class NSGA3:
     def __init__(self,exchange: str, symbol: str, strategy: str, 
                 tf: str, from_time: int, to_time: int, population_size: int):
         self.exchange = exchange
@@ -95,17 +95,32 @@ class Nsga2:
 
 
     def create_new_population(self, fronts: typing.List[BacktestResult]) -> typing.List[BacktestResult]:
-        new_pop = []
+        # Return empty list if fronts is empty
+        if len(fronts) == 0:
+            return []
 
+        # Calculate crowding distance for each solution in each front
         for front in fronts:
-            if len(new_pop) + len(front) > self.population_size:
-                max_individuals = self.population_size - len(new_pop)
-                if max_individuals > 0:
-                    new_pop += sorted(front, key=lambda x: getattr(x, "crowding_distance"))[-max_individuals:]
-            else:
-                new_pop += front 
+            front = self.crowding_distance(front)
+
+        # Sort solutions in each front by crowding distance
+        fronts = [sorted(front, key=lambda x: x.crowding_distance, reverse=True) for front in fronts]
+
+        # Select solutions based on continuous crowded comparison operator
+        new_pop = []
+        while len(new_pop) < self.population_size:
+            # Select solutions from each front in a round-robin fashion
+            for front in fronts:
+                if len(new_pop) + len(front) <= self.population_size:
+                    new_pop += front
+                else:
+                    new_pop += front[:self.population_size - len(new_pop)]
+                    break
 
         return new_pop
+
+
+
 
 
     def create_offspring_population(self, population: typing.List[BacktestResult]) -> typing.List[BacktestResult]:

@@ -124,38 +124,38 @@ if __name__ == "__main__":
             except ValueError:
                 continue
         
-        nsga2 = optimizer.Nsga2(exchange, symbol, strategy, tf, from_time, to_time, pop_size)
+        NSGA3 = optimizer.NSGA3(exchange, symbol, strategy, tf, from_time, to_time, pop_size)
 
 
-        p_population = nsga2.create_initial_population()
-        p_population = nsga2.evaluate_population(p_population)
-        p_population = nsga2.crowding_distance(p_population)
+        p_population = NSGA3.create_initial_population()
+        p_population = NSGA3.evaluate_population(p_population)
+        p_population = NSGA3.crowding_distance(p_population)
 
         g = 0
         pbar = tqdm(total=generations)
         while g < generations:
 
-            q_population = nsga2.create_offspring_population(p_population)
-            q_population = nsga2.evaluate_population(q_population)
+            q_population = NSGA3.create_offspring_population(p_population)
+            q_population = NSGA3.evaluate_population(q_population)
 
             r_population = p_population + q_population
 
-            nsga2.population_params.clear()
+            NSGA3.population_params.clear()
 
             i = 0
             population = dict()
             for bt in r_population:
                 bt.reset_results()
-                nsga2.population_params.append(bt.parameters)
+                NSGA3.population_params.append(bt.parameters)
                 population[i] = bt
                 i += 1
 
 
-            fronts = nsga2.non_dominated_sortings(population)
+            fronts = NSGA3.non_dominated_sortings(population)
             for j in range(len(fronts)):
-                fronts[j] = nsga2.crowding_distance(fronts[j])
+                fronts[j] = NSGA3.crowding_distance(fronts[j])
 
-            p_population = nsga2.create_new_population(fronts)
+            p_population = NSGA3.create_new_population(fronts)
 
             # print(f"\r{format(int(g + 1) / generations * 100, '.2f')}%", end='')
             # g += 1

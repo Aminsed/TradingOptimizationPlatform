@@ -31,7 +31,7 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
     balance = 1000
     #percentage amount of available balance used for each trade
     invest_per_trade_percent = 100
-    cost_per_trade_percent = 2
+    cost_per_trade_percent = 0
     open_orders = []
     pending_order={}
     trailing_stoploss = []
@@ -40,11 +40,11 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
     for i in range(1, len(data)):
         balance_hist.append(balance)
         
-        #remove for validation
-        temp_max_dd = max(balance_hist)
-        if balance < 800 or balance < (temp_max_dd*0.8):
-            balance_hist = [0]
-            return 0, 0
+        # remove for validation
+        # temp_max_dd = max(balance_hist)
+        # if balance < 800 or balance < (temp_max_dd*0.8):
+        #     balance_hist = [0]
+        #     break
 
         invest_per_trade = balance * invest_per_trade_percent / 100
         if open_orders:
