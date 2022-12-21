@@ -123,9 +123,9 @@ class NSGA3:
 
 
 
-
     def create_offspring_population(self, population: typing.List[BacktestResult]) -> typing.List[BacktestResult]:
         offspring_pop = []
+        self.population_params = [x.parameters for x in population]
         
         while len(offspring_pop) != self.population_size:
 
@@ -149,6 +149,8 @@ class NSGA3:
 
             number_of_crossovers = random.randint(0, len(self.params_data))
             params_to_cross = random.sample(list(self.params_data.keys()), k = number_of_crossovers)
+            while params_to_cross in self.population_params:
+                params_to_cross = random.sample(list(self.params_data.keys()), k = number_of_crossovers)
 
             for p in params_to_cross:
                 new_child.parameters[p] = copy.copy(parents[1].parameters[p])
@@ -157,6 +159,8 @@ class NSGA3:
 
             number_of_mutations = random.randint(0, len(self.params_data))
             params_to_change = random.sample(list(self.params_data.keys()), k= number_of_mutations)
+            while params_to_change in self.population_params:
+                params_to_change = random.sample(list(self.params_data.keys()), k= number_of_mutations)
 
             for p in params_to_change:
                 mutations_strength = random.uniform(-2, 2) # mutation posibilibty of range +-%200
@@ -178,6 +182,60 @@ class NSGA3:
                 self.population_params.append(new_child.parameters)
 
         return offspring_pop
+    # def create_offspring_population(self, population: typing.List[BacktestResult]) -> typing.List[BacktestResult]:
+    #     offspring_pop = []
+        
+    #     while len(offspring_pop) != self.population_size:
+
+    #         parents: typing.List[BacktestResult] = []
+
+    #         for i in range(2):
+    #             random_parents = random.sample(population, k=2)
+    #             if random_parents[0].rank != random_parents[1].rank:
+    #                 best_parent = min(random_parents, key=lambda x: getattr(x, "rank"))
+    #             # If individuals are equal we use crowding distance
+    #             else:
+    #                 best_parent = max(random_parents, key=lambda x: getattr(x, "crowding_distance"))
+                
+    #             parents.append(best_parent)
+
+    #         new_child = BacktestResult()
+    #         # Using copy constructor to make sure child modifications won't change the parents
+    #         new_child.parameters = copy.copy(parents[0].parameters)
+
+    #         # Crossover
+
+    #         number_of_crossovers = random.randint(0, len(self.params_data))
+    #         params_to_cross = random.sample(list(self.params_data.keys()), k = number_of_crossovers)
+
+    #         for p in params_to_cross:
+    #             new_child.parameters[p] = copy.copy(parents[1].parameters[p])
+
+    #         # Mutation
+
+    #         number_of_mutations = random.randint(0, len(self.params_data))
+    #         params_to_change = random.sample(list(self.params_data.keys()), k= number_of_mutations)
+
+    #         for p in params_to_change:
+    #             mutations_strength = random.uniform(-2, 2) # mutation posibilibty of range +-%200
+    #             # Accounting for data type int/float
+    #             new_child.parameters[p] = self.params_data[p]["type"](new_child.parameters[p] * (1 + mutations_strength))
+    #             # Making sure mutation is within expected range of minimum and maximum
+    #             new_child.parameters[p] = max(new_child.parameters[p], self.params_data[p]["min"])
+    #             new_child.parameters[p] = min(new_child.parameters[p], self.params_data[p]["max"])
+
+
+    #             if self.params_data[p]["type"] == float:
+    #                 new_child.parameters[p] = round(new_child.parameters[p], self.params_data[p]["decimals"])
+
+    #         new_child.parameters = self._params_constraints(new_child.parameters)
+
+    #         # Avoding duplicates
+    #         if new_child.parameters not in self.population_params:
+    #             offspring_pop.append(new_child)
+    #             self.population_params.append(new_child.parameters)
+
+    #     return offspring_pop
 
 
 

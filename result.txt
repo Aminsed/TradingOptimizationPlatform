@@ -1,10 +1,30 @@
-PNL = 5.31 Max. Drawdown = 202.94 Parameters = {'slow_ma_period': 1000, 'fast_ma_period': 1, 'atr_period': 1000, 'takeprofit': 3.91, 'stoploss': 2.0} Rank = 0 Crowding Distance = inf
-PNL = 261.03 Max. Drawdown = 753.44 Parameters = {'slow_ma_period': 501, 'fast_ma_period': 1, 'atr_period': 100, 'takeprofit': 2.0, 'stoploss': 2.0} Rank = 0 Crowding Distance = inf
-PNL = 77.86 Max. Drawdown = 640.34 Parameters = {'slow_ma_period': 325, 'fast_ma_period': 1, 'atr_period': 158, 'takeprofit': 50, 'stoploss': 2.0} Rank = 0 Crowding Distance = 2.3407729916125923
-PNL = 22.61 Max. Drawdown = 468.24 Parameters = {'slow_ma_period': 1000, 'fast_ma_period': 746, 'atr_period': 100, 'takeprofit': 2.78, 'stoploss': 3.27} Rank = 0 Crowding Distance = 1.2330361572711623
-PNL = 60.7 Max. Drawdown = 540.41 Parameters = {'slow_ma_period': 966, 'fast_ma_period': 696, 'atr_period': 284, 'takeprofit': 2.0, 'stoploss': 2.0} Rank = 0 Crowding Distance = 1.0573171498053426
-PNL = 19.68 Max. Drawdown = 289.32 Parameters = {'slow_ma_period': 1000, 'fast_ma_period': 1000, 'atr_period': 100, 'takeprofit': 2.71, 'stoploss': 2.0} Rank = 0 Crowding Distance = 0.6729467066881245
-PNL = 15.42 Max. Drawdown = 228.83 Parameters = {'slow_ma_period': 964, 'fast_ma_period': 964, 'atr_period': 864, 'takeprofit': 50, 'stoploss': 2.0} Rank = 0 Crowding Distance = 0.42619085111624505
-PNL = 19.68 Max. Drawdown = 289.32 Parameters = {'slow_ma_period': 1000, 'fast_ma_period': 1000, 'atr_period': 100, 'takeprofit': 2.0, 'stoploss': 2.0} Rank = 0 Crowding Distance = 0.2530749163549043
-PNL = 5.31 Max. Drawdown = 202.94 Parameters = {'slow_ma_period': 1000, 'fast_ma_period': 1, 'atr_period': 1000, 'takeprofit': 7.38, 'stoploss': 2.0} Rank = 0 Crowding Distance = 0.17311593476134077
-PNL = 5.31 Max. Drawdown = 202.94 Parameters = {'slow_ma_period': 1000, 'fast_ma_period': 1, 'atr_period': 1000, 'takeprofit': 17.44, 'stoploss': 2.0} Rank = 0 Crowding Distance = 0.0
+PNL = 0.06 Max. Drawdown = 0.03 Parameters = {'ma_period': 24} Rank = 0 Crowding Distance = inf
+PNL = 0.06 Max. Drawdown = 0.03 Parameters = {'ma_period': 25} Rank = 0 Crowding Distance = inf
+PNL = 0.04 Max. Drawdown = 0.03 Parameters = {'ma_period': 23} Rank = 1 Crowding Distance = inf
+PNL = 0.06 Max. Drawdown = 0.04 Parameters = {'ma_period': 26} Rank = 1 Crowding Distance = inf
+PNL = 0.04 Max. Drawdown = 0.03 Parameters = {'ma_period': 27} Rank = 1 Crowding Distance = 3.159095423173863
+PNL = 0.05 Max. Drawdown = 0.03 Parameters = {'ma_period': 17} Rank = 1 Crowding Distance = 2.6534659080414364
+PNL = 0.02 Max. Drawdown = 0.03 Parameters = {'ma_period': 54} Rank = 2 Crowding Distance = inf
+PNL = 0.06 Max. Drawdown = 0.04 Parameters = {'ma_period': 16} Rank = 2 Crowding Distance = inf
+PNL = 0.04 Max. Drawdown = 0.04 Parameters = {'ma_period': 157} Rank = 2 Crowding Distance = 2.2361878534401605
+PNL = 0.04 Max. Drawdown = 0.03 Parameters = {'ma_period': 29} Rank = 2 Crowding Distance = 1.7638121465598395
+PNL = 0.04 Max. Drawdown = 0.03 Parameters = {'ma_period': 28} Rank = 2 Crowding Distance = 1.5168620084111843
+PNL = 0.02 Max. Drawdown = 0.03 Parameters = {'ma_period': 53} Rank = 3 Crowding Distance = inf
+PNL = 0.04 Max. Drawdown = 0.04 Parameters = {'ma_period': 13} Rank = 3 Crowding Distance = inf
+PNL = 0.03 Max. Drawdown = 0.04 Parameters = {'ma_period': 47} Rank = 3 Crowding Distance = 2.1187525726892384
+PNL = 0.04 Max. Drawdown = 0.04 Parameters = {'ma_period': 161} Rank = 3 Crowding Distance = 1.8812474273107616
+PNL = 0.03 Max. Drawdown = 0.04 Parameters = {'ma_period': 15} Rank = 3 Crowding Distance = 1.1452880863359178
+PNL = 0.02 Max. Drawdown = 0.04 Parameters = {'ma_period': 56} Rank = 4 Crowding Distance = inf
+PNL = 0.04 Max. Drawdown = 0.04 Parameters = {'ma_period': 154} Rank = 4 Crowding Distance = inf
+PNL = 0.04 Max. Drawdown = 0.04 Parameters = {'ma_period': 18} Rank = 4 Crowding Distance = 2.3000518636457006
+PNL = 0.03 Max. Drawdown = 0.04 Parameters = {'ma_period': 30} Rank = 4 Crowding Distance = 2.021782470141608
+PNL = 0.02 Max. Drawdown = 0.04 Parameters = {'ma_period': 46} Rank = 4 Crowding Distance = 1.2405932885009183
+PNL = 0.02 Max. Drawdown = 0.04 Parameters = {'ma_period': 45} Rank = 4 Crowding Distance = 0.7864822478542075
+PNL = -0.0 Max. Drawdown = 0.04 Parameters = {'ma_period': 59} Rank = 5 Crowding Distance = inf
+PNL = 0.04 Max. Drawdown = 0.06 Parameters = {'ma_period': 184} Rank = 5 Crowding Distance = inf
+PNL = 0.04 Max. Drawdown = 0.05 Parameters = {'ma_period': 172} Rank = 5 Crowding Distance = 1.5817499610797863
+PNL = 0.03 Max. Drawdown = 0.04 Parameters = {'ma_period': 48} Rank = 5 Crowding Distance = 1.4870498956193545
+PNL = 0.04 Max. Drawdown = 0.04 Parameters = {'ma_period': 14} Rank = 5 Crowding Distance = 1.3473870132738535
+PNL = 0.01 Max. Drawdown = 0.04 Parameters = {'ma_period': 55} Rank = 5 Crowding Distance = 1.2912554348307976
+PNL = 0.03 Max. Drawdown = 0.04 Parameters = {'ma_period': 42} Rank = 5 Crowding Distance = 0.7928808149181298
+PNL = 0.03 Max. Drawdown = 0.04 Parameters = {'ma_period': 12} Rank = 5 Crowding Distance = 0.4683420462827784

@@ -182,6 +182,9 @@ if __name__ == "__main__":
             plt.show(block=False)
             plt.pause(0.5)
             plt.clf()
+            with open(f'{symbol}_progress.txt', 'w') as f:
+                for individual in p_population:
+                    f.write(str(individual) + '\n')
             #
             r_population = p_population + q_population
 
@@ -210,6 +213,7 @@ if __name__ == "__main__":
             g +=1
         pbar.close()
         plt.show()
+
 ################
 
         print("\n")
