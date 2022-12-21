@@ -9,6 +9,8 @@ from exchanges.binance import BinanceClient
 from exchanges.ftx import FtxClient
 from exchanges.dukascopy import DukascopyClient
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+
 
 
 logger = logging.getLogger()
@@ -132,12 +134,55 @@ if __name__ == "__main__":
         p_population = NSGA3.crowding_distance(p_population)
 
         g = 0
+        # pbar = tqdm(total=generations)
+        # while g < generations:
+
+        #     q_population = NSGA3.create_offspring_population(p_population)
+        #     q_population = NSGA3.evaluate_population(q_population)
+
+        #     r_population = p_population + q_population
+
+        #     NSGA3.population_params.clear()
+
+        #     i = 0
+        #     population = dict()
+        #     for bt in r_population:
+        #         bt.reset_results()
+        #         NSGA3.population_params.append(bt.parameters)
+        #         population[i] = bt
+        #         i += 1
+
+
+        #     fronts = NSGA3.non_dominated_sortings(population)
+        #     for j in range(len(fronts)):
+        #         fronts[j] = NSGA3.crowding_distance(fronts[j])
+
+        #     p_population = NSGA3.create_new_population(fronts)
+
+        #     # print(f"\r{format(int(g + 1) / generations * 100, '.2f')}%", end='')
+        #     # g += 1
+
+            
+        #     pbar.update(1)
+        #     g +=1
+        # pbar.close()
+################
         pbar = tqdm(total=generations)
         while g < generations:
 
             q_population = NSGA3.create_offspring_population(p_population)
             q_population = NSGA3.evaluate_population(q_population)
-
+            #
+            pnl_values = [backtest.pnl for backtest in p_population]
+            max_dd_values = [backtest.max_dd for backtest in p_population]
+            plt.scatter(pnl_values, max_dd_values)
+            plt.xlabel("PNL")
+            plt.ylabel("Max. Drawdown")
+            plt.title("Population over Generations")
+            plt.show(block=False)
+            plt.pause(0.5)
+            plt.clf()
+            #
             r_population = p_population + q_population
 
             NSGA3.population_params.clear()
@@ -164,14 +209,13 @@ if __name__ == "__main__":
             pbar.update(1)
             g +=1
         pbar.close()
-
-
-
+        plt.show()
+################
 
         print("\n")
         
-        for individual in p_population:
-            print(individual)
+        # for individual in p_population:
+        #     print(individual)
         with open('result.txt', 'w') as f:
             for individual in p_population:
                 f.write(str(individual) + '\n')
