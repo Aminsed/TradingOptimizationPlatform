@@ -43,7 +43,7 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
         # remove for validation
         temp_max_dd = max(balance_hist)
         if balance < 800 or balance < (temp_max_dd*0.8):
-            balance_hist = [0]
+            balance_hist = [temp_max_dd]
             break
 
         invest_per_trade = balance * invest_per_trade_percent / 100
@@ -128,7 +128,10 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                                 "stoploss":sl, "takeprofit":tp}
     # remove in validation
     if number_of_trades < 150:
-        return balance * (number_of_trades/150), max(balance_hist) - balance
+        if max(balance_hist) == 0:
+            return balance * (number_of_trades/150), 0
+        else:
+            return balance * (number_of_trades/150), max(balance_hist) - balance
     else:
         return balance, max(balance_hist) - balance
 
