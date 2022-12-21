@@ -11,7 +11,7 @@ from database import Hdf5Client
 from models import BacktestResult
 
 import multiprocessing as mp
-import concurrent
+import concurrent.futures
 
 import strategies.obv
 import strategies.ichimoku
