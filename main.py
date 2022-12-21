@@ -175,10 +175,10 @@ if __name__ == "__main__":
             #
             pnl_values = [backtest.pnl for backtest in p_population]
             max_dd_values = [backtest.max_dd for backtest in p_population]
-            plt.scatter(pnl_values, max_dd_values)
-            plt.xlabel("PNL")
-            plt.ylabel("Max. Drawdown")
-            plt.title("Population over Generations")
+            plt.scatter(max_dd_values, pnl_values)
+            plt.ylabel("PNL")
+            plt.xlabel("Max. Drawdown")
+            plt.title(f"Population over {g} Generations")
             plt.show(block=False)
             plt.pause(0.5)
             plt.clf()
