@@ -11,7 +11,7 @@ from database import Hdf5Client
 from models import BacktestResult
 
 import multiprocessing as mp
-import concurrent.futures
+import multiprocessing
 
 import strategies.obv
 import strategies.ichimoku
@@ -357,27 +357,26 @@ class NSGA3:
                     bt.max_dd = float("inf")
             return population
 
-        # elif self.strategy == "sma_sl_tp_fixed":
-        #     with mp.Pool(mp.cpu_count()) as pool:
-        #         results = pool.starmap(strategies.sma_sl_tp_fixed.backtest,
-        #                             ((self.data, bt.parameters["slow_ma_period"], 
-        #                             bt.parameters["fast_ma_period"], bt.parameters["atr_period"],
-        #                             bt.parameters["takeprofit"], bt.parameters["stoploss"])
-        #                                 for bt in population))
-
-        #     for bt, (pnl, max_dd) in zip(population, results):
-        #         bt.pnl, bt.max_dd = pnl, max_dd
-        #         if bt.pnl == 0:
-        #             bt.pnl = -float("inf")
-        #             bt.max_dd = float("inf")
-        #     return population
-
         elif self.strategy == "sma_sl_tp_fixed":
-            with concurrent.futures.ProcessPoolExecutor() as executor:
-                results = executor.map(strategies.sma_sl_tp_fixed.backtest,
-                                        (self.data, bt.parameters["slow_ma_period"], 
+            # with mp.Pool(mp.cpu_count()) as pool:
+            #     results = pool.starmap(strategies.sma_sl_tp_fixed.backtest,
+            #                         ((self.data, bt.parameters["slow_ma_period"], 
+            #                         bt.parameters["fast_ma_period"], bt.parameters["atr_period"],
+            #                         bt.parameters["takeprofit"], bt.parameters["stoploss"])
+            #                             for bt in population))
+
+            # for bt, (pnl, max_dd) in zip(population, results):
+            #     bt.pnl, bt.max_dd = pnl, max_dd
+            #     if bt.pnl == 0:
+            #         bt.pnl = -float("inf")
+            #         bt.max_dd = float("inf")
+            # return population
+
+            with multiprocessing.Pool(mp.cpu_count()) as pool:
+                results = pool.starmap(strategies.sma_sl_tp_fixed.backtest,
+                                    ((self.data, bt.parameters["slow_ma_period"], 
                                         bt.parameters["fast_ma_period"], bt.parameters["atr_period"],
-                                        bt.parameters["takeprofit"], bt.parameters["stoploss"]
+                                        bt.parameters["takeprofit"], bt.parameters["stoploss"])
                                             for bt in population))
 
             for bt, (pnl, max_dd) in zip(population, results):
@@ -386,6 +385,8 @@ class NSGA3:
                     bt.pnl = -float("inf")
                     bt.max_dd = float("inf")
             return population
+
+
 
             # for bt in population:
             #     bt.pnl, bt.max_dd = strategies.ichimoku.backtest(self.data, tenkan_period=bt.parameters["tenkan"], kijun_period=bt.parameters["kijun"])
