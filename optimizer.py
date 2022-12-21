@@ -375,10 +375,10 @@ class NSGA3:
         elif self.strategy == "sma_sl_tp_fixed":
             with concurrent.futures.ProcessPoolExecutor() as executor:
                 results = executor.map(strategies.sma_sl_tp_fixed.backtest,
-                                    ((self.data, bt.parameters["slow_ma_period"], 
-                                    bt.parameters["fast_ma_period"], bt.parameters["atr_period"],
-                                    bt.parameters["takeprofit"], bt.parameters["stoploss"])
-                                        for bt in population))
+                                        (self.data, bt.parameters["slow_ma_period"], 
+                                        bt.parameters["fast_ma_period"], bt.parameters["atr_period"],
+                                        bt.parameters["takeprofit"], bt.parameters["stoploss"]
+                                            for bt in population))
 
             for bt, (pnl, max_dd) in zip(population, results):
                 bt.pnl, bt.max_dd = pnl, max_dd
