@@ -358,26 +358,12 @@ class NSGA3:
             return population
 
         elif self.strategy == "sma_sl_tp_fixed":
-            # with mp.Pool(mp.cpu_count()) as pool:
-            #     results = pool.starmap(strategies.sma_sl_tp_fixed.backtest,
-            #                         ((self.data, bt.parameters["slow_ma_period"], 
-            #                         bt.parameters["fast_ma_period"], bt.parameters["atr_period"],
-            #                         bt.parameters["takeprofit"], bt.parameters["stoploss"])
-            #                             for bt in population))
-
-            # for bt, (pnl, max_dd) in zip(population, results):
-            #     bt.pnl, bt.max_dd = pnl, max_dd
-            #     if bt.pnl == 0:
-            #         bt.pnl = -float("inf")
-            #         bt.max_dd = float("inf")
-            # return population
-
-            with multiprocessing.Pool(mp.cpu_count()) as pool:
+            with mp.Pool(mp.cpu_count()) as pool:
                 results = pool.starmap(strategies.sma_sl_tp_fixed.backtest,
                                     ((self.data, bt.parameters["slow_ma_period"], 
-                                        bt.parameters["fast_ma_period"], bt.parameters["atr_period"],
-                                        bt.parameters["takeprofit"], bt.parameters["stoploss"])
-                                            for bt in population))
+                                    bt.parameters["fast_ma_period"], bt.parameters["atr_period"],
+                                    bt.parameters["takeprofit"], bt.parameters["stoploss"])
+                                        for bt in population))
 
             for bt, (pnl, max_dd) in zip(population, results):
                 bt.pnl, bt.max_dd = pnl, max_dd
@@ -385,6 +371,20 @@ class NSGA3:
                     bt.pnl = -float("inf")
                     bt.max_dd = float("inf")
             return population
+
+            # with multiprocessing.Pool(mp.cpu_count()) as pool:
+            #     results = pool.starmap(strategies.sma_sl_tp_fixed.backtest,
+            #                         ((self.data, bt.parameters["slow_ma_period"], 
+            #                             bt.parameters["fast_ma_period"], bt.parameters["atr_period"],
+            #                             bt.parameters["takeprofit"], bt.parameters["stoploss"])
+            #                                 for bt in population))
+
+            # for bt, (pnl, max_dd) in zip(population, results):
+            #     bt.pnl, bt.max_dd = pnl, max_dd
+            #     if bt.pnl == 0:
+            #         bt.pnl = -float("inf")
+            #         bt.max_dd = float("inf")
+            # return population
 
 
 
