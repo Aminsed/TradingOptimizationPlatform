@@ -34,7 +34,6 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
     cost_per_trade_percent = 0
     open_orders = []
     pending_order={}
-    trailing_stoploss = []
     balance_hist = []
     
     for i in range(1, len(data)):
@@ -42,10 +41,10 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
         
         # remove for validation
         temp_max_dd = max(balance_hist)
-        if balance < 800 or balance < (temp_max_dd*0.8):
+        if balance < 700 or balance < (temp_max_dd*0.7):
             balance = balance * (balance/temp_max_dd)
             break
-        
+
         invest_per_trade = balance * invest_per_trade_percent / 100
         if open_orders:
             if open_orders[0]["trade_side"]==1:
