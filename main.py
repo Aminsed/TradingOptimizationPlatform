@@ -185,7 +185,7 @@ if __name__ == "__main__":
             with open(f'{symbol}_progress.txt', 'w') as f:
                 for individual in p_population:
                     f.write(str(individual) + '\n')
-            #
+            
             r_population = p_population + q_population
 
             NSGA3.population_params.clear()
@@ -217,9 +217,7 @@ if __name__ == "__main__":
 ################
 
         print("\n")
-        
-        # for individual in p_population:
-        #     print(individual)
+
         with open('result.txt', 'w') as f:
             for individual in p_population:
                 f.write(str(individual) + '\n')
