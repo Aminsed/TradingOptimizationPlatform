@@ -44,8 +44,8 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
         temp_max_dd = max(balance_hist)
         if balance < 800 or balance < (temp_max_dd*0.8):
             balance = balance * (balance/temp_max_dd)
-            return balance, max(balance_hist)
-
+            break
+        
         invest_per_trade = balance * invest_per_trade_percent / 100
         if open_orders:
             if open_orders[0]["trade_side"]==1:
