@@ -1,3 +1,5 @@
+#include <numeric>
+
 #include "Psar.h"
 #include "../Database.h"
 #include "../Utils.h"

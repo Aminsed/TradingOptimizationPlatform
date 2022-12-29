@@ -71,7 +71,7 @@ def resample_timeframe(data: pd.DataFrame, tf: str) -> pd.DataFrame:
     )
 
 def get_library():
-    lib = CDLL("build/libbacktestingCpp.dylib")
+    lib = CDLL("backtestingCpp/build/libbacktestingCpp.dylib")
 
     #SMA
     lib.Sma_new.restype = c_void_p
