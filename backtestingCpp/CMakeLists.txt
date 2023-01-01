@@ -7,15 +7,19 @@ enable_testing()
 
 find_package(HDF5 REQUIRED COMPONENTS C)
 
+find_package(CUDA)
+
 include_directories(${HDF5_INCLUDE_DIRS})
 
-set(SOURCE_FILES main.cpp Database.cpp Utils.cpp strategies/Sma.cpp strategies/Psar.cpp)
+set(SOURCE_FILES main.cpp Database.cpp Utils.cpp strategies/Sma.cpp strategies/Psar.cpp strategies/cuda_file.cu)
 
 # Using add_library instead of add_executable to call from Python
 #add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} ${HDF5_LIBRARIES} ${HDF5_C_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${HDF5_LIBRARIES} ${HDF5_C_LIBRARIES} ${CUDA_LIBRARIES})
+
+set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
