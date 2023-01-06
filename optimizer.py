@@ -203,6 +203,7 @@ class NSGA3:
         
         elif self.strategy == "sma_sl_tp_fixed":
             params["slow_ma_period"] = max(params["slow_ma_period"], params["fast_ma_period"])
+            params["takeprofit"] = max(params["takeprofit"], params["stoploss"])
 
         elif self.strategy == "ichimoku":
             params["kijun"] = max(params["kijun"], params["tenkan"])
