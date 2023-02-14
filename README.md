@@ -6,15 +6,6 @@ This repository is dedicated for downloading historical cryptocurrency data as w
 
 
 ## Historical Data Downloader
-
-
-Clone the project
-
-```bash
-  git clone https://github.com/Nexalogy/crypto_r_and_d.git
-```
-
-
 Install dependencies
 
 ```bash
@@ -52,9 +43,3 @@ https://www.hdfgroup.org/downloads/hdfview/
 
 To read the data we can use different methods either through Python's standard library or Pandas, to learn more please visit:
 https://stackoverflow.com/questions/28170623/how-to-read-hdf5-files-in-python
-
-
-## Backtesting
-
-## Optimization
-# crypto_r_and_d
