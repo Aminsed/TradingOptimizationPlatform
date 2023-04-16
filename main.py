@@ -133,55 +133,15 @@ if __name__ == "__main__":
         p_population = NSGA3.evaluate_population(p_population)
         p_population = NSGA3.crowding_distance(p_population)
 
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 9))
         g = 0
-        # pbar = tqdm(total=generations)
-        # while g < generations:
-
-        #     q_population = NSGA3.create_offspring_population(p_population)
-        #     q_population = NSGA3.evaluate_population(q_population)
-
-        #     r_population = p_population + q_population
-
-        #     NSGA3.population_params.clear()
-
-        #     i = 0
-        #     population = dict()
-        #     for bt in r_population:
-        #         bt.reset_results()
-        #         NSGA3.population_params.append(bt.parameters)
-        #         population[i] = bt
-        #         i += 1
-
-
-        #     fronts = NSGA3.non_dominated_sortings(population)
-        #     for j in range(len(fronts)):
-        #         fronts[j] = NSGA3.crowding_distance(fronts[j])
-
-        #     p_population = NSGA3.create_new_population(fronts)
-
-        #     # print(f"\r{format(int(g + 1) / generations * 100, '.2f')}%", end='')
-        #     # g += 1
-
-            
-        #     pbar.update(1)
-        #     g +=1
-        # pbar.close()
-################
+        max_profit_values = []  # Added this line to store max profit values
+        
         pbar = tqdm(total=generations)
         while g < generations:
 
             q_population = NSGA3.create_offspring_population(p_population)
             q_population = NSGA3.evaluate_population(q_population)
-            #
-            pnl_values = [backtest.pnl for backtest in p_population]
-            max_dd_values = [backtest.max_dd for backtest in p_population]
-            plt.scatter(max_dd_values, pnl_values)
-            plt.ylabel("PNL")
-            plt.xlabel("Max. Drawdown")
-            plt.title(f"Population over {g} Generations")
-            plt.show(block=False)
-            plt.pause(0.5)
-            plt.clf()
             #
             r_population = p_population + q_population
 
@@ -195,17 +155,33 @@ if __name__ == "__main__":
                 population[i] = bt
                 i += 1
 
-
             fronts = NSGA3.non_dominated_sortings(population)
             for j in range(len(fronts)):
                 fronts[j] = NSGA3.crowding_distance(fronts[j])
 
             p_population = NSGA3.create_new_population(fronts)
 
-            # print(f"\r{format(int(g + 1) / generations * 100, '.2f')}%", end='')
-            # g += 1
+            # Update the plots with the new population (p_population)
+            pnl_values = [backtest.pnl for backtest in p_population]
+            max_dd_values = [backtest.max_dd for backtest in p_population]
+            ax1.scatter(max_dd_values, pnl_values)
+            ax1.set_ylabel("PNL")
+            ax1.set_xlabel("Max. Drawdown")
+            ax1.set_title(f"Population over {g} Generations")
+            #
+            # New subplot for max profit of each generation
+            profit_values = [backtest.pnl - backtest.max_dd for backtest in p_population]
+            max_profit_values.append(max(profit_values))  # Store max profit value of the current generation
+            ax2.plot(range(1, g + 2), max_profit_values, marker='o')
+            ax2.set_ylabel("Max Profit")
+            ax2.set_xlabel("Generation")
+            ax2.set_title("Max Profit of Each Generation")
+            #
+            plt.draw()
+            plt.pause(0.5)
+            ax1.clear()
+            ax2.clear()
 
-            
             pbar.update(1)
             g +=1
         pbar.close()
@@ -213,7 +189,7 @@ if __name__ == "__main__":
 ################
 
         print("\n")
-        
+
         # for individual in p_population:
         #     print(individual)
         with open('result.txt', 'w') as f:
