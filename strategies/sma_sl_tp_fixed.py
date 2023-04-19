@@ -34,17 +34,22 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
     cost_per_trade_percent = 0
     open_orders = []
     pending_order={}
-    trailing_stoploss = []
     balance_hist = []
+
+    max_balance = balance 
+    max_drawdown = 0 
     
     for i in range(1, len(data)):
         balance_hist.append(balance)
+
+        if balance > max_balance:
+            max_balance = balance
+
+        current_drawdown = max_balance - balance
+        if current_drawdown > max_drawdown:
+            max_drawdown = current_drawdown
         
-        # remove for validation
-        temp_max_dd = max(balance_hist)
-        if balance < 800 or balance < (temp_max_dd*0.7):
-            balance_hist = [temp_max_dd]
-            balance *= (balance/temp_max_dd)
+        if balance <= 0:
             break
 
         invest_per_trade = balance * invest_per_trade_percent / 100
@@ -127,16 +132,9 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                 tp = data['close'].iloc[i] - ((data['atr'].iloc[i])*takeprofit)
                 pending_order = {"order_id":i, "trade_side":-1, "trade_entry_price":trade_entry_price,
                                 "stoploss":sl, "takeprofit":tp}
-    # # remove in validation
-    # if number_of_trades < 150:
-    #     if max(balance_hist) == 0:
-    #         return balance * (number_of_trades/150), 0
-    #     else:
-    #         return balance * (number_of_trades/150), max(balance_hist) - balance
-    # else:
-    dd = max(balance_hist) - balance
-    if dd <= 0:
+
+    if max_drawdown <= 0:
         return balance, 0
     else:
-        return balance, dd
+        return balance, max_drawdown
 
