@@ -83,6 +83,14 @@ class Hdf5Client:
 
         return first_ts, last_ts
 
+    def get_all_data(self, symbol: str) -> list:
+        existing_data = self.hf[symbol][:]
+
+        if len(existing_data) == 0:
+            return []
+
+        data = sorted(existing_data, key=lambda x: x[0])
+        return data
 
 
 

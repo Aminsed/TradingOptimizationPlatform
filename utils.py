@@ -96,3 +96,17 @@ def get_library():
     lib.Psar_get_max_dd.argtypes = [c_void_p]
 
     return lib
+
+
+def downsample_data(data, freq='D'):
+    timestamps, open_prices, high_prices, low_prices, close_prices, volumes = zip(*data)
+    df = pd.DataFrame({'timestamp': timestamps,
+                       'open': open_prices,
+                       'high': high_prices,
+                       'low': low_prices,
+                       'close': close_prices,
+                       'volume': volumes})
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+    df.set_index('timestamp', inplace=True)
+    df = df.resample(freq).agg({'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum'})
+    return df.reset_index().values.tolist()

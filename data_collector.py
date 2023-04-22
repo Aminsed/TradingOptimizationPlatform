@@ -5,6 +5,7 @@ import time
 
 from database import Hdf5Client
 from utils import *
+from plots import *
 from exchanges.binance import BinanceClient
 from exchanges.ftx import FtxClient
 from exchanges.dukascopy import DukascopyClient
@@ -103,6 +104,10 @@ def collect_all(client: typing.Union[BinanceClient, FtxClient, DukascopyClient],
         time.sleep(1.1)
 
     h5_db.write_data(symbol, data_to_insert)
+    all_data = h5_db.get_all_data(symbol)
+    if all_data:
+        downsampled_data = downsample_data(all_data)
+        plot_hist_data(symbol, downsampled_data)
 
 
 
