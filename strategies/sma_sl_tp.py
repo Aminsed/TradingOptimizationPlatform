@@ -120,7 +120,7 @@ def backtest(data1: pd.core.frame.DataFrame, slow_ma_period: int, fast_ma_period
                     if data['low'].iloc[i] < data['low'].iloc[i-1]:
                         if len(trailing_stoploss) == 0:
                             trailing_stoploss.append(data['low'].iloc[i])
-                            dist = data['low'].iloc[i] - data['low'].iloc[i-i]
+                            dist = data['low'].iloc[i] - data['low'].iloc[i-1]
                             open_orders[0]["stoploss"] -= abs(dist)
                         
                         elif data['low'].iloc[i] < min(trailing_stoploss):
