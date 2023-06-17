@@ -8,6 +8,7 @@ from data_collector import collect_all
 from exchanges.binance import BinanceClient
 from exchanges.ftx import FtxClient
 from exchanges.dukascopy import DukascopyClient
+from exchanges.polygon import PolygonClient
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
@@ -36,7 +37,7 @@ if __name__ == "__main__":
 
     while True:
         exchange = input("Choose an exchange: ").lower()
-        if exchange in ["ftx", "binance", "dukascopy"]:
+        if exchange in ["ftx", "binance", "dukascopy", "polygon"]:
             break
         else:
             print(exchange + " is not a valid exchange.")
@@ -48,13 +49,16 @@ if __name__ == "__main__":
         client = FtxClient()
     elif exchange == "dukascopy":
         client = DukascopyClient()
+    elif exchange == "polygon":
+        client = PolygonClient()
 
     while True:
         symbol = input("Choose a symbol: ").upper()
-        if symbol in client.symbols:
-            break
-        else:
-            print("Symbol not found.")
+        break
+    #     if symbol in client.symbols:
+    #         break
+    #     else:
+    #         print("Symbol not found.")
 
     if mode == "data":
         collect_all(client, exchange, symbol)

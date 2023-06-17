@@ -22,7 +22,7 @@ from_time = "2022-01-01"
 from_time = int(datetime.datetime.strptime(from_time, "%Y-%m-%d").timestamp() * 1000)
 to_time = int(datetime.datetime.now().timestamp() * 1000)
 exchange = "Dukascopy"
-symbol = "2032"
+symbol = "2000"
 strategy = "sma_sl_tp"
 tf = "1h"
 

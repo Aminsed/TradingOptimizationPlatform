@@ -9,13 +9,14 @@ from plots import *
 from exchanges.binance import BinanceClient
 from exchanges.ftx import FtxClient
 from exchanges.dukascopy import DukascopyClient
+from exchanges.polygon import PolygonClient
 
 
 
 logger = logging.getLogger()
 
 
-def collect_all(client: typing.Union[BinanceClient, FtxClient, DukascopyClient], exchange: str, symbol: str):
+def collect_all(client: typing.Union[BinanceClient, FtxClient, DukascopyClient, PolygonClient], exchange: str, symbol: str):
 
     h5_db = Hdf5Client(exchange)
     h5_db.create_dataset(symbol)
