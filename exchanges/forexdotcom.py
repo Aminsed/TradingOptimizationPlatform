@@ -4,12 +4,11 @@ import logging
 logger = logging.getLogger()
 
 class CityIndexClient:
-    def __init__(self, username, password, app_key, client_account_id):
+    def __init__(self, username, password, app_key):
         self._base_url = "https://ciapi.cityindex.com"
         self.username = username
         self.password = password
         self.app_key = app_key
-        self.client_account_id = client_account_id
         self._session = self._login()
         self.symbols = self._get_symbols()
 
@@ -47,7 +46,6 @@ class CityIndexClient:
     def _get_symbols(self):
         market_endpoint = "/TradingAPI/spread/markets"
         market_params = {
-            "ClientAccountId": self.client_account_id,
             "maxresults": 500
         }
         markets = self._make_request(market_endpoint, params=market_params)
