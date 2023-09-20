@@ -67,13 +67,13 @@ class GCapiClient:
         endpoint = f'/market/{market_id}/tickhistory?PriceTicks={num_ticks}&priceType={price_type}'
         return self._make_request(endpoint)
 
-    def get_historical_data(self, market_id: str, num_ticks: int = 5000, from_ts: Optional[int] = None, to_ts: Optional[int] = None):
+    def get_historical_data(self, market_id: str, num_ticks: int = 5000, start_time: Optional[int] = None, end_time: Optional[int] = None):
         interval = "MINUTE"
         span = 1
 
-        if from_ts is not None and to_ts is not None:
+        if start_time is not None and end_time is not None:
             r = self._session.get(
-                self._base_url + f'/market/{market_id}/barhistorybetween?interval={interval}&span={span}&fromTimeStampUTC={from_ts}&toTimeStampUTC={to_ts}')
+                self._base_url + f'/market/{market_id}/barhistorybetween?interval={interval}&span={span}&fromTimeStampUTC={start_time}&toTimeStampUTC={end_time}')
         else:
             r = self._session.get(self._base_url + f'/market/{market_id}/barhistory?interval={interval}&span={span}&PriceBars={num_ticks}')
 
