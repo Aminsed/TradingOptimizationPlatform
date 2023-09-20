@@ -71,6 +71,11 @@ class GCapiClient:
         interval = "MINUTE"
         span = 1
 
+        if start_time is not None:
+            start_time = int(start_time / 1000)  # Convert to Gain Capital's expected format
+        if end_time is not None:
+            end_time = int(end_time / 1000)  # Convert to Gain Capital's expected format
+
         if start_time is not None and end_time is not None:
             r = self._session.get(
                 self._base_url + f'/market/{market_id}/barhistorybetween?interval={interval}&span={span}&fromTimeStampUTC={start_time}&toTimeStampUTC={end_time}')
@@ -83,7 +88,7 @@ class GCapiClient:
         try:
             for price in resp['PriceBars']:
                 # Extract timestamp from the string, convert it to float, and multiply by 1000
-                timestamp = float(price['BarDate'][6:-2]) / 1000 * 1000
+                timestamp = float(price['BarDate'][6:-2])
                 # Check if 'Volume' key exists, if not set it to 0
                 volume = price.get('Volume', 0)
                 # Append tuple (timestamp, open, high, low, close, volume)
