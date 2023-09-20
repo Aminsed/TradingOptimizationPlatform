@@ -67,32 +67,40 @@ class GCapiClient:
         endpoint = f'/market/{market_id}/tickhistory?PriceTicks={num_ticks}&priceType={price_type}'
         return self._make_request(endpoint)
 
-    def get_historical_data(self, market_id: str, num_ticks: int = 5000, start_time: Optional[int] = None, end_time: Optional[int] = None):
-        interval = "MINUTE"
-        span = 1
+        def get_historical_data(self, market_id: str, num_ticks: int = 4000, start_time: Optional[int] = None, end_time: Optional[int] = None):
+            interval = "MINUTE"
+            span = 1
 
-        if start_time is not None:
-            start_time = int(start_time / 1000)  # Convert to Gain Capital's expected format
-        if end_time is not None:
-            end_time = int(end_time / 1000)  # Convert to Gain Capital's expected format
+            # Convert timestamps to Gain Capital's expected format
+            if start_time is not None:
+                start_time = int(start_time / 1000)
+            if end_time is not None:
+                end_time = int(end_time / 1000)
 
-        if start_time is not None and end_time is not None:
-            r = self._session.get(
-                self._base_url + f'/market/{market_id}/barhistorybetween?interval={interval}&span={span}&fromTimeStampUTC={start_time}&toTimeStampUTC={end_time}')
-        else:
-            r = self._session.get(self._base_url + f'/market/{market_id}/barhistory?interval={interval}&span={span}&PriceBars={num_ticks}')
+            # If only end_time is provided, use the barhistorybefore endpoint
+            if end_time is not None and start_time is None:
+                r = self._session.get(
+                    self._base_url + f'/market/{market_id}/barhistorybefore?interval={interval}&span={span}&maxResults={num_ticks}&toTimeStampUTC={end_time}')
+            elif start_time is not None:
+                r = self._session.get(
+                    self._base_url + f'/market/{market_id}/barhistoryafter?interval={interval}&span={span}&maxResults={num_ticks}&fromTimeStampUTC={start_time}')
+            else:
+                # Default to the barhistory endpoint if no specific timestamps are provided
+                r = self._session.get(self._base_url + f'/market/{market_id}/barhistory?interval={interval}&span={span}&PriceBars={num_ticks}')
 
-        resp = json.loads(r.text)
-        prices = []
+            resp = json.loads(r.text)
+            prices = []
 
-        try:
-            for price in resp['PriceBars']:
-                # Extract timestamp from the string, convert it to float, and multiply by 1000
-                timestamp = float(price['BarDate'][6:-2])
-                # Check if 'Volume' key exists, if not set it to 0
-                volume = price.get('Volume', 0)
-                # Append tuple (timestamp, open, high, low, close, volume)
-                prices.append((timestamp, price['Open'], price['High'], price['Low'], price['Close'], volume))
-            return prices
-        except:
-            raise GCapiException(resp)
+            try:
+                if 'PriceBars' in resp:
+                    for price in resp['PriceBars']:
+                        # Extract timestamp from the string and convert it to float
+                        timestamp = float(price['BarDate'][6:-2])
+                        
+                        # Check if 'Volume' key exists, if not set it to 0
+                        volume = price.get('Volume', 0)
+                        # Append tuple (timestamp, open, high, low, close, volume)
+                        prices.append((timestamp, price['Open'], price['High'], price['Low'], price['Close'], volume))
+                return prices
+            except:
+                raise GCapiException(resp)
