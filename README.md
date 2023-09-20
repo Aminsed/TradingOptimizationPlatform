@@ -25,7 +25,7 @@ Select data
   data
 ```
 
-Choose a broker to download data from (Binance or FTX) 
+Choose a broker to download data from (Binance, GCapiClient, Dukascopy) 
 example:
 ```bash
   Choose an exchange: binance
@@ -35,7 +35,7 @@ example:
 ```bash
   Choose a symbol: btcusdt
 ```
-There is slight difference between Binance and FTX in the way they list crypto names. For example: for Binance we use BTCUSDT whereas for FTX we use BTC/USD. Please refer to binance_symbols.txt and ftx_symbols.txt for list of available crypto pair names. In case of Dukascopy, this broker uses an ID instead of the symbol name. For example, if you want to download BTCUSD value you have to use its ID value of 75304 instead. To find the corresponding ID of each symbol please refer to dukascopy_symbols.csv.
+ In case of Dukascopy and GainCapital, these brokers uses an ID instead of the symbol name. For example, if you want to download BTCUSD value you have to use its ID value of 75304 instead. To find the corresponding ID of each symbol please refer to dukascopy_symbols.csv and gaincapital_symbols.csv
 
 After downloading process has been completed the data can be found under the *data/* folder.
 

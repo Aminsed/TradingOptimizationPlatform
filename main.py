@@ -6,7 +6,7 @@ import optimizer
 from utils import TF_EQUIV
 from data_collector import collect_all
 from exchanges.binance import BinanceClient
-from exchanges.ftx import FtxClient
+from exchanges.gaincapital import GCapiClient
 from exchanges.dukascopy import DukascopyClient
 from tqdm import tqdm
 import matplotlib.pyplot as plt
@@ -36,16 +36,16 @@ if __name__ == "__main__":
 
     while True:
         exchange = input("Choose an exchange: ").lower()
-        if exchange in ["ftx", "binance", "dukascopy"]:
+        if exchange in ["gaincapital", "binance", "dukascopy"]:
             break
         else:
             print(exchange + " is not a valid exchange.")
-            print("Please select from: ftx, binance, dukascopy")
+            print("Please select from: gaincapital, binance, dukascopy")
 
     if exchange == "binance":
         client = BinanceClient(True)
-    elif exchange == "ftx":
-        client = FtxClient()
+    elif exchange == "gaincapital":
+        client = GCapiClient()
     elif exchange == "dukascopy":
         client = DukascopyClient()
 
@@ -61,7 +61,6 @@ if __name__ == "__main__":
 
     elif mode in ["backtest", "optimize"]:
 
-        # Strategy
 
         available_strategies = ["bb", "ichimoku", "macd", "obv", "psar", "rsi", "sma", "sma_sl_tp", "sma_sl_tp_fixed", "sup_res"]
 
@@ -90,8 +89,6 @@ if __name__ == "__main__":
                 break
             except ValueError:
                 continue
-
-        # To
 
         while True:
             to_time = input("Backtest to (yyyy-mm-dd or Press Enter): ")
@@ -134,39 +131,7 @@ if __name__ == "__main__":
         p_population = NSGA3.crowding_distance(p_population)
 
         g = 0
-        # pbar = tqdm(total=generations)
-        # while g < generations:
 
-        #     q_population = NSGA3.create_offspring_population(p_population)
-        #     q_population = NSGA3.evaluate_population(q_population)
-
-        #     r_population = p_population + q_population
-
-        #     NSGA3.population_params.clear()
-
-        #     i = 0
-        #     population = dict()
-        #     for bt in r_population:
-        #         bt.reset_results()
-        #         NSGA3.population_params.append(bt.parameters)
-        #         population[i] = bt
-        #         i += 1
-
-
-        #     fronts = NSGA3.non_dominated_sortings(population)
-        #     for j in range(len(fronts)):
-        #         fronts[j] = NSGA3.crowding_distance(fronts[j])
-
-        #     p_population = NSGA3.create_new_population(fronts)
-
-        #     # print(f"\r{format(int(g + 1) / generations * 100, '.2f')}%", end='')
-        #     # g += 1
-
-            
-        #     pbar.update(1)
-        #     g +=1
-        # pbar.close()
-################
         pbar = tqdm(total=generations)
         while g < generations:
 
@@ -202,20 +167,13 @@ if __name__ == "__main__":
 
             p_population = NSGA3.create_new_population(fronts)
 
-            # print(f"\r{format(int(g + 1) / generations * 100, '.2f')}%", end='')
-            # g += 1
-
-            
             pbar.update(1)
             g +=1
         pbar.close()
         plt.show()
-################
 
         print("\n")
         
-        # for individual in p_population:
-        #     print(individual)
         with open('result.txt', 'w') as f:
             for individual in p_population:
                 f.write(str(individual) + '\n')
