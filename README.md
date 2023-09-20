@@ -25,7 +25,7 @@ Select data
   data
 ```
 
-Choose a broker to download data from (Binance, GCapiClient, Dukascopy) 
+Choose a broker to download data from (Binance, GainCapital, Dukascopy) 
 example:
 ```bash
   Choose an exchange: binance
