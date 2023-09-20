@@ -4,6 +4,8 @@ import logging
 import configparser
 import os
 
+from typing import Optional
+
 logger = logging.getLogger()
 
 class GCapiClient:
