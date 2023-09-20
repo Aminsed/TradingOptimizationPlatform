@@ -18,7 +18,7 @@ class GCapiClient:
         username = config['Credentials']['username']
         password = config['Credentials']['password']
         appkey = config['Credentials']['appkey']
-
+        print(username, password, appkey)
         self._base_url = "https://ciapi.cityindex.com/TradingAPI"
         self._session = self._create_session(username, password, appkey)
 

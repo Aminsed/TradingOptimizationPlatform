@@ -49,12 +49,13 @@ if __name__ == "__main__":
     elif exchange == "dukascopy":
         client = DukascopyClient()
 
-    while True:
-        symbol = input("Choose a symbol: ").upper()
-        if symbol in client.symbols:
-            break
-        else:
-            print("Symbol not found.")
+    #modify get symbol to read from csv and txt files instead
+    # while True:
+    symbol = input("Choose a symbol: ").upper()
+        # if symbol in client.symbols:
+        #     break
+        # else:
+        #     print("Symbol not found.")
 
     if mode == "data":
         collect_all(client, exchange, symbol)
