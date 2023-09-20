@@ -1,11 +1,22 @@
 import requests
 import json
 import logging
+import configparser
+import os
 
 logger = logging.getLogger()
 
 class GCapiClient:
-    def __init__(self, username, password, appkey):
+    def __init__(self):
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        config_path = os.path.join(dir_path, 'config.ini')
+        config = configparser.ConfigParser()
+        config.read(config_path)
+        
+        username = config['Credentials']['username']
+        password = config['Credentials']['password']
+        appkey = config['Credentials']['appkey']
+
         self._base_url = "https://ciapi.cityindex.com/TradingAPI"
         self._session = self._create_session(username, password, appkey)
 
