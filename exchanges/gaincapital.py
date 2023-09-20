@@ -54,26 +54,27 @@ class GCapiClient:
         endpoint = f'/market/{market_id}/tickhistory?PriceTicks={num_ticks}&priceType={price_type}'
         return self._make_request(endpoint)
 
-    def get_historical_data(self, symbol: str, start_time: Optional[int] = None, end_time: Optional[int] = None):
-        # Get market_id from symbol
-        market_info = self.get_market_info(symbol)
-        try:
-            market_id = market_info['Markets'][0]['MarketId']
-        except (KeyError, IndexError):
-            return None
+    def get_historical_data(self, market_id: str, num_ticks: int = 5000, from_ts: Optional[int] = None, to_ts: Optional[int] = None):
+        interval = "MINUTE"
+        span = 1
 
-        # If start_time and end_time are not provided, get the last 5000 bars
-        if start_time is None or end_time is None:
-            num_ticks = 5000
-            endpoint = f'/market/{market_id}/barhistory?PriceBars={num_ticks}'
-            return self._make_request(endpoint)
-
-        # If start_time and end_time are provided, get historical data between these timestamps
+        if from_ts is not None and to_ts is not None:
+            r = self._session.get(
+                self._base_url + f'/market/{market_id}/barhistorybetween?interval={interval}&span={span}&fromTimeStampUTC={from_ts}&toTimeStampUTC={to_ts}')
         else:
-            params = {
-                'fromTimeStampUTC': start_time,
-                'toTimestampUTC': end_time,
-                'maxResults': 4000
-            }
-            endpoint = f'/market/{market_id}/tickhistorybetween'
-            return self._make_request(endpoint, params)
+            r = self._session.get(self._base_url + f'/market/{market_id}/barhistory?interval={interval}&span={span}&PriceBars={num_ticks}')
+
+        resp = json.loads(r.text)
+        prices = []
+
+        try:
+            for price in resp['PriceBars']:
+                # Extract timestamp from the string, convert it to float, and multiply by 1000
+                timestamp = float(price['BarDate'][6:-2]) / 1000 * 1000
+                # Check if 'Volume' key exists, if not set it to 0
+                volume = price.get('Volume', 0)
+                # Append tuple (timestamp, open, high, low, close, volume)
+                prices.append((timestamp, price['Open'], price['High'], price['Low'], price['Close'], volume))
+            return prices
+        except:
+            raise GCapiException(resp)
