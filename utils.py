@@ -31,9 +31,9 @@ STRAT_PARAMS = {
         "max_acc": {"name": "Max Acceleration", "type": float, "min": 0.01, "max": 1, "decimals": 2},
         },
     "macd": {
-        "ma_slow_period": {"name": "Slow MA Period", "type": int, "min": 2, "max": 500},
-        "ma_fast_period": {"name": "Fast MA Period", "type": int, "min": 2, "max": 500},
-        "ma_signal_period": {"name": "Signal MA Period", "type": int, "min": 2, "max": 500},
+        "ma_slow_period": {"name": "Slow MA Period", "type": int, "min": 1, "max": 1000},
+        "ma_fast_period": {"name": "Fast MA Period", "type": int, "min": 1, "max": 1000},
+        "ma_signal_period": {"name": "Signal MA Period", "type": int, "min": 1, "max": 1000},
         },
     "rsi": {
         "rsi_period": {"name": "RSI Period", "type": int, "min": 2, "max": 500},
