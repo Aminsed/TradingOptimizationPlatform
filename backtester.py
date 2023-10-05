@@ -11,7 +11,7 @@ import strategies.rsi
 import strategies.bb
 import strategies.sma_sl_tp
 import strategies.sma_sl_tp_fixed
-import.strategies.super_macd
+import strategies.super_macd
 
 def run(exchange: str, symbol: str, strategy: str, tf: str, from_time: int, to_time: int):
 
