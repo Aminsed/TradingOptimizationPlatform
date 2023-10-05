@@ -58,11 +58,11 @@ STRAT_PARAMS = {
         "stoploss": {"name": "Stop Loss", "type": float, "min": 2.00, "max": 50, "decimals": 2},
     },
     "super_macd": {
-        "atr_period": {"name": "ATR Period", "type": int, "min": 1, "max": 100},
-        "atr_multiplier": {"name": "ATR Multiplier", "type": float, "min": 1, "max": 100, "decimals": 2},
-        "ma_fast_period": {"name": "MACD Fast MA Period", "type": int, "min": 1, "max": 100},
-        "ma_slow_period": {"name": "MACD Slow MA Period", "type": int, "min": 1, "max": 100},
-        "ma_signal_period": {"name": "MACD Signal Line Period", "type": int, "min": 1, "max": 100},
+        "atr_period": {"name": "ATR Period", "type": int, "min": 1, "max": 10},
+        "atr_multiplier": {"name": "ATR Multiplier", "type": float, "min": 1, "max": 10, "decimals": 2},
+        "ma_fast_period": {"name": "MACD Fast MA Period", "type": int, "min": 1, "max": 25},
+        "ma_slow_period": {"name": "MACD Slow MA Period", "type": int, "min": 25, "max": 1000},
+        "ma_signal_period": {"name": "MACD Signal Line Period", "type": int, "min": 1, "max": 1000},
     }
 
 }
