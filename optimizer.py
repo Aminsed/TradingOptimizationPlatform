@@ -38,7 +38,7 @@ class NSGA3:
 
         self.population_params = []
 
-        if self.strategy in ["obv", "ichimoku", "sup_res", "macd", "rsi", "bb", "sma_sl_tp", "sma_sl_tp_fixed"]:
+        if self.strategy in ["obv", "ichimoku", "sup_res", "macd", "rsi", "bb", "sma_sl_tp", "sma_sl_tp_fixed", "super_macd"]:
             h5_db = Hdf5Client(exchange)
             self.data = h5_db.get_data(symbol, from_time, to_time)
             self.data = resample_timeframe(self.data, tf)
@@ -181,8 +181,6 @@ class NSGA3:
 
 
 
-
-
     # Enforcing logical constraints. 
     # For example the slow MA value should always be higher than the fast MA.
     def _params_constraints(self, params: typing.Dict) -> typing.Dict:
@@ -216,6 +214,9 @@ class NSGA3:
         elif self.strategy == "psar":
             params["initial_acc"] = min(params["initial_acc"], params["max_acc"])
             params["acc_increment"] = min(params["acc_increment"], params["max_acc"] - params["initial_acc"])
+
+        elif self.strategy == "super_macd":
+            params["ma_slow_period"] = max(params["ma_slow_period"], params["ma_fast_period"])
 
         return params
 
@@ -371,14 +372,32 @@ class NSGA3:
                     bt.max_dd = float("inf")
             return population
 
-            # for bt in population:
-            #     bt.pnl, bt.max_dd = strategies.ichimoku.backtest(self.data, tenkan_period=bt.parameters["tenkan"], kijun_period=bt.parameters["kijun"])
+        elif self.strategy == "super_macd":
+            # Use multiprocessing to parallelize the backtest calculations
+            with mp.Pool(mp.cpu_count()) as pool:
+                results = pool.starmap(
+                    strategies.super_macd.backtest,
+                    (
+                        (
+                            self.data, 
+                            bt.parameters["atr_period"], 
+                            bt.parameters["atr_multiplier"], 
+                            bt.parameters["ma_fast_period"], 
+                            bt.parameters["ma_slow_period"],
+                            bt.parameters["ma_signal_period"]
+                        ) 
+                        for bt in population
+                    )
+                )
 
-            #     if bt.pnl == 0:
-            #         bt.pnl = -float("inf")
-            #         bt.max_dd = float("inf")
+            for bt, (pnl, max_dd) in zip(population, results):
+                bt.pnl, bt.max_dd = pnl, max_dd
+                if bt.pnl == 0:
+                    bt.pnl = -float("inf")
+                    bt.max_dd = float("inf")
 
-            # return population
+            return population
+
 
         elif self.strategy == "sup_res":
 
@@ -394,16 +413,6 @@ class NSGA3:
                     bt.max_dd = float("inf")
             return population
 
-            # for bt in population:
-            #     bt.pnl, bt.max_dd = strategies.support_resistance.backtest(self.data, min_points=bt.parameters["min_points"],
-            #                                                 min_diff_points=bt.parameters["min_diff_points"],
-            #                                                 rounding_nb=bt.parameters["rounding_nb"],
-            #                                                 take_profit=bt.parameters["take_profit"], stop_loss=bt.parameters["stop_loss"])
-            #     if bt.pnl == 0:
-            #         bt.pnl = -float("inf")
-            #         bt.max_dd = float("inf")
-
-            # return population
 
         elif self.strategy == "sma":
 
