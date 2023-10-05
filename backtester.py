@@ -11,6 +11,7 @@ import strategies.rsi
 import strategies.bb
 import strategies.sma_sl_tp
 import strategies.sma_sl_tp_fixed
+import.strategies.super_macd
 
 def run(exchange: str, symbol: str, strategy: str, tf: str, from_time: int, to_time: int):
 
@@ -63,6 +64,22 @@ def run(exchange: str, symbol: str, strategy: str, tf: str, from_time: int, to_t
 
         pnl, max_drawdown = strategies.macd.backtest(data, ma_fast_period=params["ma_fast_period"], ma_slow_period=params["ma_slow_period"],
                                        ma_signal_period=params["ma_signal_period"])
+
+        return pnl, max_drawdown
+
+    elif strategy == "super_macd":
+        h5_db = Hdf5Client(exchange)
+        data = h5_db.get_data(symbol, from_time, to_time)
+        data = resample_timeframe(data, tf)
+
+        pnl, max_drawdown = strategies.super_macd.backtest(
+            data, 
+            atr_period=params["atr_period"], 
+            atr_multiplier=params["atr_multiplier"], 
+            ma_fast_period=params["ma_fast_period"], 
+            ma_slow_period=params["ma_slow_period"],
+            ma_signal_period=params["ma_signal_period"]
+        )
 
         return pnl, max_drawdown
 
