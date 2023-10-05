@@ -217,7 +217,7 @@ class NSGA3:
 
         elif self.strategy == "super_macd":
             params["ma_slow_period"] = max(params["ma_slow_period"], params["ma_fast_period"])
-
+            params["ma_fast_period"] = min(params["ma_slow_period"], params["ma_fast_period"])
         return params
 
 
