@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-def backtest(df: pd.DataFrame, atr_periods: int, atr_multiplier: float, change_atr: bool, exponential_ma: bool):
+def backtest(df: pd.DataFrame, atr_period: int, atr_multiplier: float, change_atr: bool, exponential_ma: bool):
     df["ma05"] = df["close"].ewm(span=5).mean() if exponential_ma else df["close"].rolling(window=5).mean()
     df["ma10"] = df["close"].ewm(span=10).mean() if exponential_ma else df["close"].rolling(window=10).mean()
     df["ma15"] = df["close"].ewm(span=15).mean() if exponential_ma else df["close"].rolling(window=15).mean()
@@ -29,8 +29,8 @@ def backtest(df: pd.DataFrame, atr_periods: int, atr_multiplier: float, change_a
     df["low_close"] = abs(df["low"] - df["close"].shift(1))
     df["tr"] = df[["high_low", "high_close", "low_close"]].max(axis=1)
 
-    df["atr2"] = df["tr"].rolling(window=atr_periods).mean()
-    df["atr"] = df["tr"].rolling(window=atr_periods).mean() if change_atr else df["atr2"]
+    df["atr2"] = df["tr"].rolling(window=atr_period).mean()
+    df["atr"] = df["tr"].rolling(window=atr_period).mean() if change_atr else df["atr2"]
 
     df["up"] = df["src"] - (atr_multiplier * df["atr"])
     df["up1"] = df["up"].shift(1).fillna(df["up"])
