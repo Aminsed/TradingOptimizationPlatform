@@ -12,6 +12,7 @@ import strategies.bb
 import strategies.sma_sl_tp
 import strategies.sma_sl_tp_fixed
 import strategies.super_macd
+import strategies.madrid_trend
 
 def run(exchange: str, symbol: str, strategy: str, tf: str, from_time: int, to_time: int):
 
@@ -82,6 +83,19 @@ def run(exchange: str, symbol: str, strategy: str, tf: str, from_time: int, to_t
         )
 
         return pnl, max_drawdown
+
+    elif strategy == "madrid_trend":
+        h5_db = Hdf5Client(exchange)
+        data = h5_db.get_data(symbol, from_time, to_time)
+        data = resample_timeframe(data, tf)
+
+        pnl, max_drawdown = strategies.madrid_trend.backtest(
+            data,
+            atr_period=params["atr_period"],
+            atr_multiplier=params["atr_multiplier"],
+            change_atr=params["change_atr"],
+            exponential_ma=params["exponential_ma"]
+        )
 
     elif strategy == "rsi":
         h5_db = Hdf5Client(exchange)
