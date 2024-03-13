@@ -20,6 +20,7 @@ import strategies.rsi
 import strategies.bb
 import strategies.sma_sl_tp
 import strategies.sma_sl_tp_fixed
+import strategies.madrid_trend
 
 
 
@@ -38,7 +39,9 @@ class NSGA3:
 
         self.population_params = []
 
-        if self.strategy in ["obv", "ichimoku", "sup_res", "macd", "rsi", "bb", "sma_sl_tp", "sma_sl_tp_fixed", "super_macd"]:
+        if self.strategy in ["obv", "ichimoku", "sup_res", "macd",
+                             "rsi", "bb", "sma_sl_tp", "sma_sl_tp_fixed",
+                              "super_macd", "madrid_trend"]:
             h5_db = Hdf5Client(exchange)
             self.data = h5_db.get_data(symbol, from_time, to_time)
             self.data = resample_timeframe(self.data, tf)
@@ -118,9 +121,6 @@ class NSGA3:
                     break
 
         return new_pop
-
-
-
 
 
     def create_offspring_population(self, population: typing.List[BacktestResult]) -> typing.List[BacktestResult]:
@@ -218,6 +218,8 @@ class NSGA3:
         elif self.strategy == "super_macd":
             params["ma_slow_period"] = max(params["ma_slow_period"], params["ma_fast_period"])
             params["ma_fast_period"] = min(params["ma_slow_period"], params["ma_fast_period"])
+        elif self.strategy == "madrid_trend":
+            pass
         return params
 
 
@@ -385,6 +387,32 @@ class NSGA3:
                             bt.parameters["ma_fast_period"], 
                             bt.parameters["ma_slow_period"],
                             bt.parameters["ma_signal_period"]
+                        ) 
+                        for bt in population
+                    )
+                )
+
+            for bt, (pnl, max_dd) in zip(population, results):
+                bt.pnl, bt.max_dd = pnl, max_dd
+                if bt.pnl == 0:
+                    bt.pnl = -float("inf")
+                    bt.max_dd = float("inf")
+
+            return population
+
+        
+        elif self.strategy == "madrid_trend":
+            # Use multiprocessing to parallelize the backtest calculations
+            with mp.Pool(mp.cpu_count()) as pool:
+                results = pool.starmap(
+                    strategies.madrid_trend.backtest,
+                    (
+                        (
+                            self.data, 
+                            bt.parameters["atr_period"], 
+                            bt.parameters["atr_multiplier"],
+                            bt.parameters["change_atr"],
+                            bt.parameters["exponential_ma"]
                         ) 
                         for bt in population
                     )
