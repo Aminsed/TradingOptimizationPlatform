@@ -65,7 +65,7 @@ STRAT_PARAMS = {
         "ma_signal_period": {"name": "MACD Signal Line Period", "type": int, "min": 1, "max": 1000},
     },
     "madrid_trend": {
-        "atr_period": {"name": "ATR Period", "type": float, "min": 0.01, "max": 10.0},
+        "atr_period": {"name": "ATR Period", "type": int, "min": 1, "max": 20},
         "atr_multiplier": {"name": "ATR Multiplier", "type": float, "min": 0.01, "max": 10.0},
         "change_atr": {"name": "Change ATR", "type": int, "min": 0, "max": 1},
         "exponential_ma": {"name": "Exponential Moving Average", "type": int, "min": 0, "max": 1},
