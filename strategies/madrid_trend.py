@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
 
-def backtest(df: pd.DataFrame, atr_period: int, atr_multiplier: float, change_atr: bool, exponential_ma: bool):
+def backtest(df: pd.DataFrame, atr_period: int, atr_multiplier: float, change_atr: int, exponential_ma: int):
+    change_atr = bool(change_atr)
+    exponential_ma = bool(exponential_ma)
+    
     df["ma05"] = df["close"].ewm(span=5).mean() if exponential_ma else df["close"].rolling(window=5).mean()
     df["ma10"] = df["close"].ewm(span=10).mean() if exponential_ma else df["close"].rolling(window=10).mean()
     df["ma15"] = df["close"].ewm(span=15).mean() if exponential_ma else df["close"].rolling(window=15).mean()
