@@ -15,20 +15,20 @@ STRAT_PARAMS = {
         "tenkan": {"name": "Tenkan Period", "type": int, "min": 2, "max": 500},
     },
     "sup_res": {
-        "min_points": {"name": "Min. Points", "type": int, "min": 2, "max": 20},
-        "min_diff_points": {"name": "Min. Difference between Points", "type": int, "min": 2, "max": 100},
-        "rounding_nb": {"name": "Rounding Number", "type": float, "min": 10, "max": 500, "decimals": 2},
-        "take_profit": {"name": "Take Profit %", "type": float, "min": 1, "max": 40, "decimals": 2},
-        "stop_loss": {"name": "Stop Loss %", "type": float, "min": 2, "max": 40, "decimals": 2},
+        "min_points": {"name": "Min. Points", "type": int, "min": 2, "max": 1000},
+        "min_diff_points": {"name": "Min. Difference between Points", "type": int, "min": 2, "max": 1000},
+        "rounding_nb": {"name": "Rounding Number", "type": float, "min": 10, "max": 1000, "decimals": 2},
+        "take_profit": {"name": "Take Profit %", "type": float, "min": 1, "max": 1000, "decimals": 2},
+        "stop_loss": {"name": "Stop Loss %", "type": float, "min": 2, "max": 1000, "decimals": 2},
     },
     "sma": {
         "slow_ma": {"name": "Slow MA Period", "type": int, "min": 2, "max": 1000},
         "fast_ma": {"name": "Fast MA Period", "type": int, "min": 2, "max": 1000},
         },
     "psar": {
-        "initial_acc": {"name": "Initial Acceleration", "type": float, "min": 0.01, "max": 1.0, "decimals": 2},
-        "acc_increment": {"name": "Acceleration Increment", "type": float, "min": 0.01, "max": 1.0, "decimals": 2},
-        "max_acc": {"name": "Max Acceleration", "type": float, "min": 0.01, "max": 1, "decimals": 2},
+        "initial_acc": {"name": "Initial Acceleration", "type": float, "min": 0.001, "max": 10.0, "decimals": 3},
+        "acc_increment": {"name": "Acceleration Increment", "type": float, "min": 0.001, "max": 10.0, "decimals": 3},
+        "max_acc": {"name": "Max Acceleration", "type": float, "min": 0.001, "max": 10, "decimals": 3},
         },
     "macd": {
         "ma_slow_period": {"name": "Slow MA Period", "type": int, "min": 1, "max": 1000},
@@ -36,12 +36,12 @@ STRAT_PARAMS = {
         "ma_signal_period": {"name": "Signal MA Period", "type": int, "min": 1, "max": 1000},
         },
     "rsi": {
-        "rsi_period": {"name": "RSI Period", "type": int, "min": 2, "max": 500},
-        "ma_period": {"name": "MA Period", "type": int, "min": 2, "max": 500},
+        "rsi_period": {"name": "RSI Period", "type": int, "min": 2, "max": 1000},
+        "ma_period": {"name": "MA Period", "type": int, "min": 2, "max": 1000},
         },
     "bb": {
-        "ma_period": {"name": "MA Period", "type": int, "min": 2, "max": 500},
-        "std_multiplier": {"name": "Std. Multiplier", "type": float, "min": 0.01, "max": 5.0, "decimals": 2},
+        "ma_period": {"name": "MA Period", "type": int, "min": 2, "max": 1000},
+        "std_multiplier": {"name": "Std. Multiplier", "type": float, "min": 0.01, "max": 10.0, "decimals": 3},
     },
     "sma_sl_tp": {
         "slow_ma_period": {"name": "Slow MA Period", "type": int, "min": 1, "max": 1000},
